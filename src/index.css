@@ -1,0 +1,72 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #2F6F6D;
+  --color-primary-hover: #245654;
+  --color-primary-light: #edf4f3;
+  
+  --color-secondary: #A7C4BC;
+  --color-secondary-hover: #91b3a9;
+  --color-secondary-light: #f2f6f5;
+  
+  --color-accent: #C89F7B;
+  --color-accent-hover: #b58b66;
+  --color-accent-light: #faf6f2;
+  
+  --color-text: #1F2933;
+  --color-text-muted: #4B5563;
+  --color-text-light: #9CA3AF;
+  
+  --font-sans: "Inter", "system-ui", sans-serif;
+}
+
+@layer base {
+  body {
+    background-color: #FAFAF7;
+    color: #1F2933;
+    font-family: "Inter", "system-ui", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+  }
+
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: none;
+    outline: 2px solid #2F6F6D;
+    outline-offset: 2px;
+  }
+}
+
+.calm-transition {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+}
+
+.layout-container {
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+  .layout-container {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .layout-container {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
