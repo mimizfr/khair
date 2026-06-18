@@ -11,7 +11,7 @@ import Community from './pages/Community';
 import About from './pages/About';
 import AdminDashboard from './pages/AdminDashboard';
 
-import { getProfessionals } from './services/professionalsService';
+import { getProfessionals } from "./services/professionalServices";
 import { getApplications, addApplication, approveApplication, deleteApplication } from './services/applicationsService';
 import { addInquiry } from './services/inquiriesService';
 
