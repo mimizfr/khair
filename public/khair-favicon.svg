@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Rounded square background -->
+  <rect width="64" height="64" rx="16" fill="#2D6E6E"/>
+  <!-- Vertical stem -->
+  <rect x="18" y="14" width="8" height="36" rx="2" fill="white"/>
+  <!-- Upper arm -->
+  <path d="M 25 31 L 44 14" stroke="white" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <!-- Lower arm -->
+  <path d="M 25 33 L 44 50" stroke="white" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+</svg>
