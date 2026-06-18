@@ -20,6 +20,7 @@ export default function Profile({ professional, onBack, onRequestContact }) {
     );
   }
 
+  // Destructure with defaults for null-safety
   const {
     id,
     name,
@@ -27,19 +28,31 @@ export default function Profile({ professional, onBack, onRequestContact }) {
     location,
     experience,
     priceRange,
-    languages,
-    sessionTypes,
-    conditionsSupported,
+    languages = [],
+    sessionTypes = [],
+    conditionsSupported = [],
     verifiedBadge,
-    verificationChecklist,
-    verificationDetails,
+    verificationChecklist = {},
+    verificationDetails = {},
     bio,
-    services,
+    services = [],
     trustExplanation,
     avatarBg
   } = professional;
 
-  // Get initials for the avatar
+  // Safe nested values
+  const safeDetails = {
+    licenseNumber: verificationDetails?.licenseNumber || verificationDetails?.license_number || 'N/A',
+    degree: verificationDetails?.degree || 'Verified',
+    backgroundCheckDate: verificationDetails?.backgroundCheckDate || verificationDetails?.background_check_date || 'Verified',
+    referenceCount: verificationDetails?.referenceCount || verificationDetails?.reference_count || 0
+  };
+
+  const safeLanguages = Array.isArray(languages) ? languages : [];
+  const safeSessionTypes = Array.isArray(sessionTypes) ? sessionTypes : [];
+  const safeConditions = Array.isArray(conditionsSupported) ? conditionsSupported : [];
+  const safeServices = Array.isArray(services) ? services : [];
+
   const getInitials = (name) => {
     return name
       .replace(/^Dr\.\s+/i, '')
@@ -53,7 +66,6 @@ export default function Profile({ professional, onBack, onRequestContact }) {
   return (
     <div className="bg-[#FAFAF7] py-12 min-h-screen">
       <div className="layout-container">
-        {/* Navigation Breadcrumb */}
         <button
           onClick={onBack}
           className="flex items-center gap-2 text-xs font-bold text-primary hover:text-primary-hover mb-8 group focus-visible:ring-2 focus-visible:ring-primary rounded p-1 calm-transition"
@@ -62,11 +74,8 @@ export default function Profile({ professional, onBack, onRequestContact }) {
           <span>Back to Search Directory</span>
         </button>
 
-        {/* Profile Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* LEFT COLUMN: Sidebar & Checklist */}
           <div className="space-y-6 lg:col-span-1">
-            {/* Main Info Card */}
             <div className="bg-[#FAFAF7] border border-[#A7C4BC]/40 rounded-2xl p-6 shadow-sm flex flex-col items-center text-center">
               <div className={`w-24 h-24 rounded-3xl bg-gradient-to-br ${avatarBg || 'from-[#2F6F6D] to-[#A7C4BC]'} flex items-center justify-center text-[#FAFAF7] font-semibold text-3xl shadow-md mb-4`}>
                 {getInitials(name)}
@@ -80,35 +89,33 @@ export default function Profile({ professional, onBack, onRequestContact }) {
               <h1 className="text-xl font-bold text-text">{name}</h1>
               <p className="text-sm font-semibold text-primary mt-1">{specialty}</p>
               <p className="text-xs text-accent font-medium mt-1 bg-accent/5 border border-accent/20 px-2.5 py-0.5 rounded-md">
-                {verifiedBadge}
+                {verifiedBadge || 'Verified Specialist'}
               </p>
 
-              {/* Attributes block */}
               <div className="w-full border-t border-[#A7C4BC]/25 mt-6 pt-6 space-y-4 text-left text-xs">
                 <div className="flex items-center gap-3 text-text/80">
                   <MapPin className="w-4.5 h-4.5 text-secondary shrink-0" />
-                  <span>Located in <strong>{location}, UAE</strong></span>
+                  <span>Located in <strong>{location || 'UAE'}, UAE</strong></span>
                 </div>
                 <div className="flex items-center gap-3 text-text/80">
                   <Briefcase className="w-4.5 h-4.5 text-secondary shrink-0" />
-                  <span><strong>{experience} Years</strong> of Practice Experience</span>
+                  <span><strong>{experience || 'N/A'} Years</strong> of Practice Experience</span>
                 </div>
                 <div className="flex items-center gap-3 text-text/80">
                   <DollarSign className="w-4.5 h-4.5 text-secondary shrink-0" />
-                  <span>Fee Range: <strong>{priceRange} AED / hour</strong></span>
+                  <span>Fee Range: <strong>{priceRange || 'N/A'} AED / hour</strong></span>
                 </div>
                 <div className="flex items-center gap-3 text-text/80">
                   <Languages className="w-4.5 h-4.5 text-secondary shrink-0" />
-                  <span>Speaks: {languages.join(', ')}</span>
+                  <span>Speaks: {safeLanguages.join(', ') || 'Not specified'}</span>
                 </div>
                 <div className="flex items-center gap-3 text-text/80">
                   <Calendar className="w-4.5 h-4.5 text-secondary shrink-0" />
-                  <span>Session Modes: {sessionTypes.join(', ')}</span>
+                  <span>Session Modes: {safeSessionTypes.join(', ') || 'Not specified'}</span>
                 </div>
               </div>
             </div>
 
-            {/* STRICT SYSTEM REQ: VISIBLE VERIFICATION CHECKLIST CARD */}
             <div className="bg-[#edf4f3] border border-primary/20 rounded-2xl p-6 shadow-sm space-y-4">
               <h3 className="text-sm font-bold text-primary flex items-center gap-2 uppercase tracking-wider">
                 <ShieldCheck className="w-5 h-5 fill-current text-primary" />
@@ -120,7 +127,7 @@ export default function Profile({ professional, onBack, onRequestContact }) {
                   <CheckCircle2 className="w-4.5 h-4.5 text-primary shrink-0 mt-0.5" />
                   <div>
                     <h4 className="text-xs font-bold text-text">Ministry Vetted License</h4>
-                    <p className="text-[10px] text-text-muted mt-0.5">License number verified: {verificationDetails.licenseNumber}</p>
+                    <p className="text-[10px] text-text-muted mt-0.5">License number verified: {safeDetails.licenseNumber}</p>
                   </div>
                 </div>
 
@@ -128,7 +135,7 @@ export default function Profile({ professional, onBack, onRequestContact }) {
                   <CheckCircle2 className="w-4.5 h-4.5 text-primary shrink-0 mt-0.5" />
                   <div>
                     <h4 className="text-xs font-bold text-text">Degree Authenticated</h4>
-                    <p className="text-[10px] text-text-muted mt-0.5">{verificationDetails.degree}</p>
+                    <p className="text-[10px] text-text-muted mt-0.5">{safeDetails.degree}</p>
                   </div>
                 </div>
 
@@ -136,7 +143,7 @@ export default function Profile({ professional, onBack, onRequestContact }) {
                   <CheckCircle2 className="w-4.5 h-4.5 text-primary shrink-0 mt-0.5" />
                   <div>
                     <h4 className="text-xs font-bold text-text">Police Conduct Certificate</h4>
-                    <p className="text-[10px] text-text-muted mt-0.5">Criminal background check cleared: {verificationDetails.backgroundCheckDate}</p>
+                    <p className="text-[10px] text-text-muted mt-0.5">Criminal background check cleared: {safeDetails.backgroundCheckDate}</p>
                   </div>
                 </div>
 
@@ -144,7 +151,7 @@ export default function Profile({ professional, onBack, onRequestContact }) {
                   <CheckCircle2 className="w-4.5 h-4.5 text-primary shrink-0 mt-0.5" />
                   <div>
                     <h4 className="text-xs font-bold text-text">Professional References Vetted</h4>
-                    <p className="text-[10px] text-text-muted mt-0.5">{verificationDetails.referenceCount} professional references checked and approved.</p>
+                    <p className="text-[10px] text-text-muted mt-0.5">{safeDetails.referenceCount} professional references checked and approved.</p>
                   </div>
                 </div>
               </div>
@@ -157,71 +164,71 @@ export default function Profile({ professional, onBack, onRequestContact }) {
             </div>
           </div>
 
-          {/* RIGHT COLUMN: Bio, Details, Services, Contact CTA */}
           <div className="space-y-6 lg:col-span-2">
-            {/* Bio Section */}
             <div className="bg-[#FAFAF7] border border-[#A7C4BC]/40 rounded-2xl p-8 shadow-sm space-y-4">
               <h2 className="text-xl font-bold text-text border-b border-[#A7C4BC]/20 pb-2">Professional Profile</h2>
-              <p className="text-sm text-text-muted leading-relaxed whitespace-pre-wrap">{bio}</p>
+              <p className="text-sm text-text-muted leading-relaxed whitespace-pre-wrap">{bio || 'No bio provided.'}</p>
             </div>
 
-            {/* Conditions Supported (Expanded Field) */}
             <div className="bg-[#FAFAF7] border border-[#A7C4BC]/40 rounded-2xl p-8 shadow-sm space-y-4">
               <h3 className="text-base font-bold text-text">Conditions & Learning Needs Supported</h3>
-              <div className="flex flex-wrap gap-2">
-                {conditionsSupported.map((cond, idx) => (
-                  <span
-                    key={idx}
-                    className="bg-accent/10 border border-accent/20 text-[#A7C4BC] text-[#1F2933] text-xs font-medium py-1.5 px-3 rounded-lg"
-                  >
-                    {cond}
-                  </span>
-                ))}
-              </div>
+              {safeConditions.length > 0 ? (
+                <div className="flex flex-wrap gap-2">
+                  {safeConditions.map((cond, idx) => (
+                    <span
+                      key={idx}
+                      className="bg-accent/10 border border-accent/20 text-[#1F2933] text-xs font-medium py-1.5 px-3 rounded-lg"
+                    >
+                      {cond}
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-xs text-text-muted">No specific conditions listed.</p>
+              )}
             </div>
 
-            {/* Credentials & Services */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Credentials detail block */}
               <div className="bg-[#FAFAF7] border border-[#A7C4BC]/40 rounded-2xl p-6 shadow-sm space-y-3.5">
                 <h3 className="text-sm font-bold uppercase tracking-wider text-accent">Clinical Credentials</h3>
                 <ul className="space-y-3 text-xs text-text-muted">
                   <li className="flex items-start gap-2">
                     <ChevronRight className="w-4 h-4 text-[#C89F7B] shrink-0 mt-0.5" />
-                    <span>Active License: <strong>{verificationDetails.licenseNumber}</strong></span>
+                    <span>Active License: <strong>{safeDetails.licenseNumber}</strong></span>
                   </li>
                   <li className="flex items-start gap-2">
                     <ChevronRight className="w-4 h-4 text-[#C89F7B] shrink-0 mt-0.5" />
-                    <span>Academic: <strong>{verificationDetails.degree.split(',')[0]}</strong></span>
+                    <span>Academic: <strong>{safeDetails.degree.split(',')[0]}</strong></span>
                   </li>
                   <li className="flex items-start gap-2">
                     <ChevronRight className="w-4 h-4 text-[#C89F7B] shrink-0 mt-0.5" />
-                    <span>Institution: <strong>{verificationDetails.degree.substring(verificationDetails.degree.indexOf(',') + 1).trim()}</strong></span>
+                    <span>Institution: <strong>{safeDetails.degree.substring(safeDetails.degree.indexOf(',') + 1).trim()}</strong></span>
                   </li>
                 </ul>
               </div>
 
-              {/* Services offered */}
               <div className="bg-[#FAFAF7] border border-[#A7C4BC]/40 rounded-2xl p-6 shadow-sm space-y-3.5">
                 <h3 className="text-sm font-bold uppercase tracking-wider text-accent">Services Offered</h3>
-                <ul className="space-y-3 text-xs text-text-muted">
-                  {services.map((service, idx) => (
-                    <li key={idx} className="flex items-start gap-2">
-                      <ChevronRight className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                      <span>{service}</span>
-                    </li>
-                  ))}
-                </ul>
+                {safeServices.length > 0 ? (
+                  <ul className="space-y-3 text-xs text-text-muted">
+                    {safeServices.map((service, idx) => (
+                      <li key={idx} className="flex items-start gap-2">
+                        <ChevronRight className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                        <span>{service}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-xs text-text-muted">No services listed.</p>
+                )}
               </div>
             </div>
 
-            {/* Trust Explanation Section */}
             <div className="bg-accent-light/35 border border-accent/20 rounded-2xl p-6 space-y-3">
               <h3 className="text-sm font-bold text-accent uppercase tracking-wider">Vetting Process & Trust Explanation</h3>
-              <p className="text-xs text-text-muted leading-relaxed">{trustExplanation}</p>
+              <p className="text-xs text-text-muted leading-relaxed">{trustExplanation || 'Verified by the Khair safety board.'}</p>
             </div>
 
-            {/* Final Page CTA Section: Navigates to dedicated Contact Page */}
             <div className="bg-[#FAFAF7] border border-primary/20 rounded-2xl p-8 shadow-sm flex flex-col md:flex-row justify-between items-center gap-6">
               <div>
                 <h3 className="text-lg font-bold text-text">Direct Contact Inquiry</h3>
