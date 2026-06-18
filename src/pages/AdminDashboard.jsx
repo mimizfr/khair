@@ -1,7 +1,22 @@
-import React from 'react';
-import { ShieldAlert, Check, X, ShieldCheck, Users, Clock, Award } from 'lucide-react';
+import React, { useState } from 'react';
+import { ShieldAlert, Check, X, ShieldCheck, Clock, Award } from 'lucide-react';
 
 export default function AdminDashboard({ applications, professionals, onApprove, onReject }) {
+  // BUG FIX #1: useState must be INSIDE the component
+  const [processingId, setProcessingId] = useState(null);
+
+  const handleApprove = async (appId) => {
+    setProcessingId(appId);
+    await onApprove(appId);
+    setProcessingId(null);
+  };
+
+  const handleReject = async (appId) => {
+    setProcessingId(appId);
+    await onReject(appId);
+    setProcessingId(null);
+  };
+
   return (
     <div className="bg-[#FAFAF7] py-12 min-h-screen">
       <div className="layout-container">
@@ -15,7 +30,6 @@ export default function AdminDashboard({ applications, professionals, onApprove,
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          {/* Vetted Professionals */}
           <div className="bg-[#FAFAF7] border border-[#A7C4BC]/40 rounded-2xl p-6 shadow-sm flex items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
               <ShieldCheck className="w-6 h-6 fill-current" />
@@ -26,7 +40,6 @@ export default function AdminDashboard({ applications, professionals, onApprove,
             </div>
           </div>
 
-          {/* Pending Reviews */}
           <div className="bg-[#FAFAF7] border border-[#A7C4BC]/40 rounded-2xl p-6 shadow-sm flex items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-[#C89F7B]/10 flex items-center justify-center text-accent">
               <Clock className="w-6 h-6" />
@@ -37,7 +50,6 @@ export default function AdminDashboard({ applications, professionals, onApprove,
             </div>
           </div>
 
-          {/* Verification standard info */}
           <div className="bg-[#edf4f3] border border-primary/20 rounded-2xl p-6 shadow-sm flex items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
               <Award className="w-6 h-6" />
@@ -61,53 +73,55 @@ export default function AdminDashboard({ applications, professionals, onApprove,
             <div className="space-y-6">
               {applications.map((app) => (
                 <div key={app.id} className="bg-[#FAFAF7] border border-accent/30 rounded-2xl p-6 md:p-8 shadow-sm space-y-4">
-                  {/* Top Bar info */}
                   <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-[#A7C4BC]/20 pb-4">
                     <div>
                       <h3 className="text-lg font-bold text-text">{app.name}</h3>
                       <p className="text-xs text-primary font-semibold mt-0.5">{app.specialty}</p>
-                      <span className="text-[10px] text-text-muted mt-1 block">Submitted: {app.dateSubmitted}</span>
+                      <span className="text-[10px] text-text-muted mt-1 block">
+                        Submitted: {app.dateSubmitted || new Date(app.created_at).toLocaleDateString()}
+                      </span>
                     </div>
 
-                    {/* Action buttons */}
+                    {/* BUG FIX #2: Buttons now disable while processing */}
                     <div className="flex gap-2.5">
                       <button
-                        onClick={() => onApprove(app.id)}
-                        className="bg-primary hover:bg-primary-hover text-[#FAFAF7] font-semibold py-2 px-4 rounded-xl text-xs flex items-center gap-1 calm-transition shadow-sm focus-visible:ring-2 focus-visible:ring-primary"
+                        onClick={() => handleApprove(app.id)}
+                        disabled={processingId === app.id}
+                        className="bg-primary hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed text-[#FAFAF7] font-semibold py-2 px-4 rounded-xl text-xs flex items-center gap-1 calm-transition shadow-sm focus-visible:ring-2 focus-visible:ring-primary"
                       >
                         <Check className="w-4 h-4" />
-                        <span>Approve License</span>
+                        <span>{processingId === app.id ? 'Approving...' : 'Approve License'}</span>
                       </button>
                       <button
-                        onClick={() => onReject(app.id)}
-                        className="bg-transparent hover:bg-red-500/10 text-red-600 font-semibold py-2 px-4 border border-red-200 hover:border-red-300 rounded-xl text-xs flex items-center gap-1 calm-transition focus-visible:ring-2 focus-visible:ring-red-400"
+                        onClick={() => handleReject(app.id)}
+                        disabled={processingId === app.id}
+                        className="bg-transparent hover:bg-red-500/10 disabled:opacity-50 disabled:cursor-not-allowed text-red-600 font-semibold py-2 px-4 border border-red-200 hover:border-red-300 rounded-xl text-xs flex items-center gap-1 calm-transition focus-visible:ring-2 focus-visible:ring-red-400"
                       >
                         <X className="w-4 h-4" />
-                        <span>Reject Application</span>
+                        <span>{processingId === app.id ? 'Processing...' : 'Reject Application'}</span>
                       </button>
                     </div>
                   </div>
 
-                  {/* Body Details */}
+                  {/* BUG FIX #3: Handle both old camelCase AND new snake_case from Supabase */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs text-text">
                     <div className="space-y-1">
                       <span className="font-bold text-text-muted">License Vetting:</span>
                       <p className="font-medium bg-secondary-light border border-secondary/20 px-2.5 py-1 rounded inline-block">
-                        {app.licenseNumber} ({app.licenseType})
+                        {app.license_number || app.licenseNumber} ({app.license_type || app.licenseType})
                       </p>
                     </div>
                     <div className="space-y-1">
                       <span className="font-bold text-text-muted">Experience & Rate:</span>
-                      <p>{app.experience} years exp • {app.priceRange} AED / hr</p>
+                      <p>{app.experience} • {app.price_range || app.priceRange} AED / hr</p>
                     </div>
                     <div className="space-y-1">
                       <span className="font-bold text-text-muted">Languages & Needs:</span>
-                      <p>Languages: {app.languages.join(', ')}</p>
-                      <p className="mt-1">Needs: {app.conditionsSupported.join(', ')}</p>
+                      <p>Languages: {(app.languages || []).join(', ')}</p>
+                      <p className="mt-1">Needs: {(app.conditions_supported || app.conditionsSupported || []).join(', ')}</p>
                     </div>
                   </div>
 
-                  {/* Application Bio */}
                   <div className="bg-[#FAFAF7] border border-[#A7C4BC]/25 rounded-xl p-4 text-xs text-text-muted leading-relaxed">
                     <strong>Applicant Bio Statement:</strong>
                     <p className="mt-1 whitespace-pre-wrap">{app.bio}</p>
@@ -149,7 +163,13 @@ export default function AdminDashboard({ applications, professionals, onApprove,
                     <tr key={prof.id} className="hover:bg-[#FAFAF7]/50 calm-transition">
                       <td className="py-4 px-6 font-bold">{prof.name}</td>
                       <td className="py-4 px-6">{prof.specialty}</td>
-                      <td className="py-4 px-6 font-mono text-accent">{prof.verificationDetails.licenseNumber}</td>
+                      {/* Handle both old nested object and new flat Supabase schema */}
+                      <td className="py-4 px-6 font-mono text-accent">
+                        {(prof.verification_details?.licenseNumber) || 
+                         (prof.verificationDetails?.licenseNumber) || 
+                         (prof.license_number) || 
+                         'N/A'}
+                      </td>
                       <td className="py-4 px-6">{prof.location}</td>
                       <td className="py-4 px-6">
                         <span className="bg-[#edf4f3] text-primary border border-primary/10 font-bold px-2 py-0.5 rounded text-[10px] uppercase">

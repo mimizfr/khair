@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShieldCheck, CheckCircle2, Send, HelpCircle, FileCheck, Award, Heart } from 'lucide-react';
+import { ShieldCheck, AlertCircle } from 'lucide-react';
 
 export default function ForEducators({ onAddApplication }) {
   const [name, setName] = useState('');
@@ -12,29 +12,57 @@ export default function ForEducators({ onAddApplication }) {
   const [languages, setLanguages] = useState('');
   const [conditionsSupported, setConditionsSupported] = useState('');
   const [bio, setBio] = useState('');
+  
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [error, setError] = useState(null);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    setError(null);
 
-    const newApplication = {
-      id: `app-${Date.now()}`,
+    
+    const applicationPayload = {
       name,
       email,
       specialty,
-      licenseType,
-      licenseNumber,
-      experience: parseInt(experience) || 1,
-      priceRange,
+      license_type: licenseType,
+      license_number: licenseNumber,
+      experience: experience ? `${experience} years` : '',
+      price_range: priceRange,
       languages: languages.split(',').map(l => l.trim()).filter(Boolean),
-      conditionsSupported: conditionsSupported.split(',').map(c => c.trim()).filter(Boolean),
-      bio,
-      dateSubmitted: new Date().toLocaleDateString()
+      conditions_supported: conditionsSupported.split(',').map(c => c.trim()).filter(Boolean),
+      bio
     };
 
-    onAddApplication(newApplication);
-    setIsSubmitted(true);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    try {
+      const success = await onAddApplication(applicationPayload);
+      
+      if (success) {
+        setIsSubmitted(true);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        setError('Submission failed. Please try again.');
+      }
+    } catch (err) {
+      setError('Something went wrong. Please check your connection and try again.');
+      console.error(err);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleReset = () => {
+    setIsSubmitted(false);
+    setError(null);
+    setName('');
+    setEmail('');
+    setLicenseNumber('');
+    setExperience('');
+    setLanguages('');
+    setConditionsSupported('');
+    setBio('');
   };
 
   const handleApplyScroll = () => {
@@ -53,7 +81,7 @@ export default function ForEducators({ onAddApplication }) {
           </div>
           <h1 className="text-2xl font-bold text-text">Application Submitted</h1>
           <p className="text-sm text-text-muted mt-3 leading-relaxed">
-            Thank you for applying to join the Khair community of verified specialists. Your application has been logged for review.
+            Thank you for applying to join the Khair community of verified specialists. Your application has been securely stored for review.
           </p>
 
           <div className="bg-[#edf4f3] rounded-xl p-5 my-6 text-left text-xs border border-primary/15 space-y-2.5">
@@ -73,24 +101,15 @@ export default function ForEducators({ onAddApplication }) {
 
           <div className="text-xs text-text-muted leading-relaxed space-y-2">
             <p>
-              <strong>What happens next?</strong> Our licensing board will review your credentials and educational background. This process takes <strong>3 to 5 business days</strong>.
+              <strong>What happens next?</strong> Our licensing board will review your credentials. This process takes <strong>3 to 5 business days</strong>.
             </p>
             <p>
-              Once approved, we will notify you at <strong>{email}</strong>, publish your profile in the search directory, and notify parents.
+              Once approved, we will notify you at <strong>{email}</strong>, publish your profile, and notify matching families.
             </p>
           </div>
 
           <button
-            onClick={() => {
-              setIsSubmitted(false);
-              setName('');
-              setEmail('');
-              setLicenseNumber('');
-              setExperience('');
-              setLanguages('');
-              setConditionsSupported('');
-              setBio('');
-            }}
+            onClick={handleReset}
             className="mt-8 bg-transparent hover:bg-secondary-light text-primary font-semibold py-2.5 px-6 border border-primary/25 rounded-xl calm-transition text-xs focus-visible:ring-2 focus-visible:ring-primary shadow-sm"
           >
             Submit Another Application
@@ -116,7 +135,7 @@ export default function ForEducators({ onAddApplication }) {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4">
               <div className="space-y-2">
                 <h3 className="text-sm font-bold text-primary flex items-center gap-1.5">
-                  <Award className="w-4.5 h-4.5 text-accent" />
+                  <span className="text-accent">★</span>
                   <span>Build Trusted Visibility</span>
                 </h3>
                 <p className="text-xs text-text-muted leading-relaxed">
@@ -126,7 +145,7 @@ export default function ForEducators({ onAddApplication }) {
 
               <div className="space-y-2">
                 <h3 className="text-sm font-bold text-primary flex items-center gap-1.5">
-                  <Heart className="w-4.5 h-4.5 text-accent" />
+                  <span className="text-accent">♥</span>
                   <span>Zero Markup Referral</span>
                 </h3>
                 <p className="text-xs text-text-muted leading-relaxed">
@@ -199,6 +218,13 @@ export default function ForEducators({ onAddApplication }) {
               Please enter your qualifications below. Our licensing desk will check all regulatory credentials.
             </p>
           </div>
+
+          {error && (
+            <div className="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-xl">
+              <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+              <p className="text-sm text-red-700">{error}</p>
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Name & Email */}
@@ -297,6 +323,7 @@ export default function ForEducators({ onAddApplication }) {
                   id="experience"
                   type="number"
                   required
+                  min="0"
                   value={experience}
                   onChange={(e) => setExperience(e.target.value)}
                   placeholder="e.g., 5"
@@ -372,9 +399,10 @@ export default function ForEducators({ onAddApplication }) {
             {/* Submit application */}
             <button
               type="submit"
-              className="w-full bg-[#2F6F6D] hover:bg-[#245654] text-[#FAFAF7] font-bold py-3.5 px-6 rounded-xl calm-transition text-xs focus-visible:ring-2 focus-visible:ring-primary shadow-sm mt-4"
+              disabled={isSubmitting}
+              className="w-full bg-[#2F6F6D] hover:bg-[#245654] disabled:opacity-50 disabled:cursor-not-allowed text-[#FAFAF7] font-bold py-3.5 px-6 rounded-xl calm-transition text-xs focus-visible:ring-2 focus-visible:ring-primary shadow-sm mt-4"
             >
-              Submit Verification Request
+              {isSubmitting ? 'Submitting...' : 'Submit Verification Request'}
             </button>
           </form>
         </div>
