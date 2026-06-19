@@ -1,8 +1,14 @@
 import React, { useState } from 'react';
-import { ShieldAlert, Check, X, ShieldCheck, Clock, Award } from 'lucide-react';
+import { ShieldAlert, Check, X, ShieldCheck, Clock, Award, LogOut, User } from 'lucide-react';
 
-export default function AdminDashboard({ applications, professionals, onApprove, onReject }) {
-  // BUG FIX #1: useState must be INSIDE the component
+export default function AdminDashboard({ 
+  applications, 
+  professionals, 
+  onApprove, 
+  onReject, 
+  onLogout,
+  adminEmail 
+}) {
   const [processingId, setProcessingId] = useState(null);
 
   const handleApprove = async (appId) => {
@@ -20,12 +26,31 @@ export default function AdminDashboard({ applications, professionals, onApprove,
   return (
     <div className="bg-[#FAFAF7] py-12 min-h-screen">
       <div className="layout-container">
-        {/* Page Header */}
-        <div className="mb-10 text-left">
-          <h1 className="text-3xl font-bold text-text">Khair Admin Verification Desk</h1>
-          <p className="text-sm text-text-muted mt-2">
-            Review, approve, or reject new professional applications. Approved educators will be dynamically added to the public directory.
-          </p>
+        {/* Page Header with Admin Info */}
+        <div className="mb-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div className="text-left">
+            <h1 className="text-3xl font-bold text-text">Khair Admin Verification Desk</h1>
+            <p className="text-sm text-text-muted mt-2">
+              Review, approve, or reject new professional applications. Approved educators will be dynamically added to the public directory.
+            </p>
+          </div>
+          
+          <div className="flex items-center gap-3 bg-white border border-[#A7C4BC]/30 rounded-xl px-4 py-2 shadow-sm">
+            <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+              <User className="w-4 h-4 text-primary" />
+            </div>
+            <div className="text-left">
+              <p className="text-xs font-semibold text-text">{adminEmail}</p>
+              <p className="text-[10px] text-primary uppercase font-bold">Admin</p>
+            </div>
+            <button
+              onClick={onLogout}
+              className="ml-2 p-1.5 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+              title="Logout"
+            >
+              <LogOut className="w-4 h-4" />
+            </button>
+          </div>
         </div>
 
         {/* Stats Grid */}
@@ -82,7 +107,6 @@ export default function AdminDashboard({ applications, professionals, onApprove,
                       </span>
                     </div>
 
-                    {/* BUG FIX #2: Buttons now disable while processing */}
                     <div className="flex gap-2.5">
                       <button
                         onClick={() => handleApprove(app.id)}
@@ -103,7 +127,6 @@ export default function AdminDashboard({ applications, professionals, onApprove,
                     </div>
                   </div>
 
-                  {/* BUG FIX #3: Handle both old camelCase AND new snake_case from Supabase */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs text-text">
                     <div className="space-y-1">
                       <span className="font-bold text-text-muted">License Vetting:</span>
@@ -163,7 +186,6 @@ export default function AdminDashboard({ applications, professionals, onApprove,
                     <tr key={prof.id} className="hover:bg-[#FAFAF7]/50 calm-transition">
                       <td className="py-4 px-6 font-bold">{prof.name}</td>
                       <td className="py-4 px-6">{prof.specialty}</td>
-                      {/* Handle both old nested object and new flat Supabase schema */}
                       <td className="py-4 px-6 font-mono text-accent">
                         {(prof.verification_details?.licenseNumber) || 
                          (prof.verificationDetails?.licenseNumber) || 

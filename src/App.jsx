@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { supabase } from './lib/supabase';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 
@@ -10,6 +11,7 @@ import ForEducators from './pages/ForEducators';
 import Community from './pages/Community';
 import About from './pages/About';
 import AdminDashboard from './pages/AdminDashboard';
+import AdminLogin from './pages/AdminLogin';
 
 import { getProfessionals } from "./services/professionalServices";
 import { getApplications, addApplication, approveApplication, deleteApplication } from './services/applicationsService';
@@ -18,7 +20,12 @@ import { addInquiry } from './services/inquiriesService';
 export default function App() {
   const [currentPage, setCurrentPage] = useState('home');
   const [selectedProfessionalId, setSelectedProfessionalId] = useState(null);
+  
+  // Auth state
+  const [user, setUser] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
 
+  // Data state
   const [professionals, setProfessionals] = useState([]);
   const [applications, setApplications] = useState([]);
   const [inquiries, setInquiries] = useState([]);
@@ -26,6 +33,21 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Check Supabase session on mount
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+      setAuthLoading(false);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  // Load data from Supabase
   useEffect(() => {
     async function loadData() {
       try {
@@ -46,6 +68,7 @@ export default function App() {
     loadData();
   }, []);
 
+  const isAdmin = user?.app_metadata?.role === 'admin' || user?.user_metadata?.role === 'admin';
   const selectedProfessional = professionals.find(p => p.id === selectedProfessionalId);
 
   // Application Handlers
@@ -100,6 +123,12 @@ export default function App() {
     }
   };
 
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setCurrentPage('home');
+  };
+
+  // Loading states
   if (loading) {
     return (
       <div className="flex flex-col min-h-screen bg-[#FAFAF7] items-center justify-center">
@@ -124,6 +153,14 @@ export default function App() {
   }
 
   const renderPage = () => {
+    if (authLoading) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-[#FAFAF7]">
+          <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+        </div>
+      );
+    }
+
     switch (currentPage) {
       case 'home':
         return (
@@ -178,12 +215,18 @@ export default function App() {
       case 'about':
         return <About />;
       case 'admin':
+        // 🔒 PROTECTION: redirect to login if not admin
+        if (!isAdmin) {
+          return <AdminLogin onLoginSuccess={() => setCurrentPage('admin')} />;
+        }
         return (
           <AdminDashboard
             applications={applications}
             professionals={professionals}
             onApprove={handleApproveApplication}
             onReject={handleRejectApplication}
+            onLogout={handleLogout}
+            adminEmail={user?.email}
           />
         );
       default:
@@ -199,7 +242,12 @@ export default function App() {
 
   return (
     <div className="flex flex-col min-h-screen bg-[#FAFAF7]">
-      <Navbar currentPage={currentPage} setCurrentPage={setCurrentPage} />
+      <Navbar 
+        currentPage={currentPage} 
+        setCurrentPage={setCurrentPage} 
+        isAdmin={isAdmin}
+        onLogout={handleLogout}
+      />
       <main className="flex-grow">{renderPage()}</main>
       <Footer setCurrentPage={setCurrentPage} />
     </div>
