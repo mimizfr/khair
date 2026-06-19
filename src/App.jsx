@@ -3,7 +3,6 @@ import { supabase } from './lib/supabase';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 
-// Pages
 import Home from './pages/Home';
 import FindProfessionals from './pages/FindProfessionals';
 import Profile from './pages/Profile';
@@ -14,8 +13,9 @@ import About from './pages/About';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminLogin from './pages/AdminLogin';
 
-// Mock seed data
-import { INITIAL_PROFESSIONALS } from './data/professionals';
+import { getProfessionals } from "./services/professionalServices";
+import { getApplications, addApplication, approveApplication, deleteApplication } from './services/applicationsService';
+import { addInquiry } from './services/inquiriesService';
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState('home');
@@ -25,10 +25,13 @@ export default function App() {
   const [user, setUser] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
 
-  // Database of professionals
-  const [professionals, setProfessionals] = useState(INITIAL_PROFESSIONALS);
+  // Data state
+  const [professionals, setProfessionals] = useState([]);
   const [applications, setApplications] = useState([]);
   const [inquiries, setInquiries] = useState([]);
+
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   // Check Supabase session on mount
   useEffect(() => {
@@ -44,68 +47,110 @@ export default function App() {
     return () => subscription.unsubscribe();
   }, []);
 
-  const isAdmin = user?.app_metadata?.role === 'admin' || user?.user_metadata?.role === 'admin';
+  // Load data from Supabase
+  useEffect(() => {
+    async function loadData() {
+      try {
+        setLoading(true);
+        const [profs, apps] = await Promise.all([
+          getProfessionals(),
+          getApplications()
+        ]);
+        setProfessionals(profs);
+        setApplications(apps);
+      } catch (err) {
+        console.error('Failed to load data:', err);
+        setError('Failed to load data. Please refresh the page.');
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadData();
+  }, []);
 
+  const isAdmin = user?.app_metadata?.role === 'admin' || user?.user_metadata?.role === 'admin';
   const selectedProfessional = professionals.find(p => p.id === selectedProfessionalId);
 
-  // Application handlers
-  const handleAddApplication = (newApp) => {
-    setApplications(prev => [...prev, newApp]);
+  // Application Handlers
+  const handleAddApplication = async (newApp) => {
+    try {
+      const inserted = await addApplication(newApp);
+      setApplications(prev => [...prev, inserted]);
+      return true;
+    } catch (err) {
+      console.error('Failed to submit application:', err);
+      alert('Failed to submit application. Please try again.');
+      return false;
+    }
   };
 
-  const handleApproveApplication = (appId) => {
-    const appToApprove = applications.find(app => app.id === appId);
-    if (!appToApprove) return;
-
-    const newProfessional = {
-      id: `prof-${Date.now()}`,
-      name: appToApprove.name,
-      specialty: appToApprove.specialty,
-      location: "Dubai",
-      experience: appToApprove.experience,
-      priceRange: appToApprove.priceRange,
-      languages: appToApprove.languages,
-      sessionTypes: ["Hybrid", "In-person"],
-      conditionsSupported: appToApprove.conditionsSupported,
-      verifiedBadge: appToApprove.licenseType.substring(0, appToApprove.licenseType.indexOf('(')).trim() + " Licensed Specialist",
-      verificationChecklist: {
-        licenseChecked: true,
-        backgroundCheck: true,
-        degreeAuthenticated: true,
-        referencesVerified: true
-      },
-      verificationDetails: {
-        licenseNumber: appToApprove.licenseNumber,
-        degree: "Verified Degree Credentials",
-        backgroundCheckDate: "Newly Vetted",
-        referenceCount: 2
-      },
-      bio: appToApprove.bio,
-      services: [
-        `Individual ${appToApprove.specialty} sessions`,
-        "Diagnostic needs screening",
-        "Parent collaboration checkins"
-      ],
-      trustExplanation: `${appToApprove.name} has been vetted by the Khair safety board in accordance with local regulations. Direct credential audits were verified successfully.`,
-      avatarBg: "from-[#A7C4BC] to-[#C89F7B]"
-    };
-
-    setProfessionals(prev => [...prev, newProfessional]);
-    setApplications(prev => prev.filter(app => app.id !== appId));
+  const handleApproveApplication = async (appId) => {
+    try {
+      await approveApplication(appId);
+      // Refresh both lists
+      const [profs, apps] = await Promise.all([
+        getProfessionals(),
+        getApplications()
+      ]);
+      setProfessionals(profs);
+      setApplications(apps);
+    } catch (err) {
+      console.error('Failed to approve:', err);
+      alert('Failed to approve application.');
+    }
   };
 
-  const handleRejectApplication = (appId) => {
-    setApplications(prev => prev.filter(app => app.id !== appId));
+  const handleRejectApplication = async (appId) => {
+    try {
+      await deleteApplication(appId);
+      setApplications(prev => prev.filter(app => app.id !== appId));
+    } catch (err) {
+      console.error('Failed to reject:', err);
+      alert('Failed to reject application.');
+    }
   };
 
-  const handleSubmitInquiry = (newInquiry) => {
-    setInquiries(prev => [...prev, newInquiry]);
+  // Contact Handlers
+  const handleSubmitInquiry = async (newInquiry) => {
+    try {
+      await addInquiry(newInquiry);
+      setInquiries(prev => [...prev, newInquiry]);
+      return true;
+    } catch (err) {
+      console.error('Failed to submit inquiry:', err);
+      alert('Failed to send message. Please try again.');
+      return false;
+    }
   };
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
     setCurrentPage('home');
   };
+
+  // Loading states
+  if (loading) {
+    return (
+      <div className="flex flex-col min-h-screen bg-[#FAFAF7] items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#5B8C85]"></div>
+        <p className="mt-4 text-[#5B8C85]">Loading Khair...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col min-h-screen bg-[#FAFAF7] items-center justify-center">
+        <p className="text-red-600">{error}</p>
+        <button 
+          onClick={() => window.location.reload()} 
+          className="mt-4 px-4 py-2 bg-[#5B8C85] text-white rounded-lg"
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
 
   const renderPage = () => {
     if (authLoading) {
@@ -170,7 +215,7 @@ export default function App() {
       case 'about':
         return <About />;
       case 'admin':
-        //redirect to login if not admin
+        // 🔒 PROTECTION: redirect to login if not admin
         if (!isAdmin) {
           return <AdminLogin onLoginSuccess={() => setCurrentPage('admin')} />;
         }

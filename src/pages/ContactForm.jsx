@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShieldCheck, ArrowLeft, Mail, Phone, Calendar, Heart, FileText, CheckCircle2 } from 'lucide-react';
+import { ShieldCheck, ArrowLeft, CheckCircle2, AlertCircle } from 'lucide-react';
 
 export default function ContactForm({ professional, onBack, onSubmitInquiry }) {
   const [parentName, setParentName] = useState('');
@@ -8,7 +8,10 @@ export default function ContactForm({ professional, onBack, onSubmitInquiry }) {
   const [childAge, setChildAge] = useState('');
   const [sessionPref, setSessionPref] = useState('Hybrid');
   const [needsDescription, setNeedsDescription] = useState('');
+  
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [error, setError] = useState(null);
 
   if (!professional) {
     return (
@@ -19,24 +22,39 @@ export default function ContactForm({ professional, onBack, onSubmitInquiry }) {
     );
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    setError(null);
 
-    const inquiryData = {
-      professionalId: professional.id,
-      professionalName: professional.name,
-      parentName,
-      parentEmail,
-      parentPhone,
-      childAge,
-      sessionPref,
-      needsDescription,
-      dateSubmitted: new Date().toLocaleDateString()
+    // Combine session preference with the message since schema has single 'message' column
+    // If you added the 'session_pref' column to Supabase, move this to its own field
+    const fullMessage = `Session Preference: ${sessionPref}\n\n${needsDescription}`;
+
+    const inquiryPayload = {
+      professional_id: professional.id,
+      parent_name: parentName,
+      email: parentEmail,
+      phone: parentPhone,
+      child_age: childAge,
+      message: fullMessage
     };
 
-    onSubmitInquiry(inquiryData);
-    setIsSubmitted(true);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    try {
+      const success = await onSubmitInquiry(inquiryPayload);
+      
+      if (success) {
+        setIsSubmitted(true);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        setError('Failed to send inquiry. Please try again.');
+      }
+    } catch (err) {
+      setError('Something went wrong. Please check your connection and try again.');
+      console.error(err);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (isSubmitted) {
@@ -48,7 +66,7 @@ export default function ContactForm({ professional, onBack, onSubmitInquiry }) {
           </div>
           <h1 className="text-2xl font-bold text-text">Inquiry Submitted Successfully</h1>
           <p className="text-sm text-text-muted mt-3 leading-relaxed">
-            Your contact inquiry has been securely sent to <strong>{professional.name}</strong>.
+            Your contact inquiry has been securely sent to <strong>{professional.name}</strong> and stored in our system.
           </p>
 
           <div className="bg-[#edf4f3] rounded-xl p-5 my-6 text-left text-xs text-text border border-primary/10 space-y-2.5">
@@ -72,7 +90,7 @@ export default function ContactForm({ professional, onBack, onSubmitInquiry }) {
 
           <div className="text-xs text-text-muted leading-relaxed space-y-2">
             <p>
-              <strong>What happens next?</strong> {professional.name} will review your child's age and needs and contact you directly at your provided email/phone to arrange a consultation.
+              <strong>What happens next?</strong> {professional.name} will review your inquiry and contact you directly at your provided email/phone to arrange a consultation.
             </p>
             <p className="font-medium text-accent">
               No service fees have been charged. All contract details are settled directly between you.
@@ -121,6 +139,13 @@ export default function ContactForm({ professional, onBack, onSubmitInquiry }) {
               </p>
             </div>
           </div>
+
+          {error && (
+            <div className="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-xl">
+              <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+              <p className="text-sm text-red-700">{error}</p>
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Parent Name */}
@@ -225,9 +250,10 @@ export default function ContactForm({ professional, onBack, onSubmitInquiry }) {
             {/* Submit */}
             <button
               type="submit"
-              className="w-full bg-primary hover:bg-primary-hover text-[#FAFAF7] font-bold py-3.5 px-6 rounded-xl calm-transition text-xs focus-visible:ring-2 focus-visible:ring-primary shadow-sm mt-4"
+              disabled={isSubmitting}
+              className="w-full bg-primary hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed text-[#FAFAF7] font-bold py-3.5 px-6 rounded-xl calm-transition text-xs focus-visible:ring-2 focus-visible:ring-primary shadow-sm mt-4"
             >
-              Submit Inquiry
+              {isSubmitting ? 'Submitting...' : 'Submit Inquiry'}
             </button>
           </form>
         </div>
