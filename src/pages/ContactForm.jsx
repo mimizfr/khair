@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShieldCheck, ArrowLeft, CheckCircle2, AlertCircle } from 'lucide-react';
+import { ShieldCheck, ArrowLeft, CheckCircle2, AlertCircle, Send, Loader2 } from 'lucide-react';
 
 export default function ContactForm({ professional, onBack, onSubmitInquiry }) {
   const [parentName, setParentName] = useState('');
@@ -15,9 +15,14 @@ export default function ContactForm({ professional, onBack, onSubmitInquiry }) {
 
   if (!professional) {
     return (
-      <div className="bg-[#FAFAF7] py-20 text-center min-h-screen">
-        <p className="text-sm text-text-muted">Error: No professional selected for contact.</p>
-        <button onClick={onBack} className="mt-4 bg-[#2F6F6D] text-white px-4 py-2 rounded-xl">Back</button>
+      <div className="bg-background py-24 text-center min-h-screen">
+        <div className="layout-container max-w-md mx-auto animate-fade-in-up">
+          <div className="w-16 h-16 rounded-2xl bg-accent/10 flex items-center justify-center text-accent mx-auto mb-6">
+            <AlertCircle className="w-8 h-8" />
+          </div>
+          <h3 className="text-xl font-bold text-text">Error: No professional selected for contact.</h3>
+          <button onClick={onBack} className="mt-6 btn-primary text-sm">Back</button>
+        </div>
       </div>
     );
   }
@@ -27,8 +32,6 @@ export default function ContactForm({ professional, onBack, onSubmitInquiry }) {
     setIsSubmitting(true);
     setError(null);
 
-    // Combine session preference with the message since schema has single 'message' column
-    // If you added the 'session_pref' column to Supabase, move this to its own field
     const fullMessage = `Session Preference: ${sessionPref}\n\n${needsDescription}`;
 
     const inquiryPayload = {
@@ -59,47 +62,47 @@ export default function ContactForm({ professional, onBack, onSubmitInquiry }) {
 
   if (isSubmitted) {
     return (
-      <div className="bg-[#FAFAF7] py-16 min-h-screen">
-        <div className="layout-container max-w-xl mx-auto text-center bg-[#FAFAF7] border border-primary/20 rounded-2xl p-8 md:p-12 shadow-sm">
-          <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center text-primary mx-auto mb-6">
+      <div className="bg-background py-20 min-h-screen">
+        <div className="layout-container max-w-xl mx-auto text-center card-base p-8 md:p-14 animate-scale-in">
+          <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center text-primary mx-auto mb-8 shadow-glow">
             <CheckCircle2 className="w-10 h-10" />
           </div>
-          <h1 className="text-2xl font-bold text-text">Inquiry Submitted Successfully</h1>
-          <p className="text-sm text-text-muted mt-3 leading-relaxed">
-            Your contact inquiry has been securely sent to <strong>{professional.name}</strong> and stored in our system.
+          <h1 className="text-2xl md:text-3xl font-bold text-text">Inquiry Submitted Successfully</h1>
+          <p className="text-base text-text-muted mt-4 leading-relaxed">
+            Your contact inquiry has been securely sent to <strong className="text-primary">{professional.name}</strong> and stored in our system.
           </p>
 
-          <div className="bg-[#edf4f3] rounded-xl p-5 my-6 text-left text-xs text-text border border-primary/10 space-y-2.5">
-            <div className="flex justify-between">
+          <div className="bg-primary-light/50 rounded-2xl p-6 my-8 text-left text-sm text-text border border-primary/15 space-y-3 shadow-soft">
+            <div className="flex justify-between items-center border-b border-primary/10 pb-2">
               <span className="font-bold text-primary">Parent Name:</span>
-              <span>{parentName}</span>
+              <span className="font-medium">{parentName}</span>
             </div>
-            <div className="flex justify-between">
+            <div className="flex justify-between items-center border-b border-primary/10 pb-2">
               <span className="font-bold text-primary">Professional:</span>
-              <span>{professional.name}</span>
+              <span className="font-medium">{professional.name}</span>
             </div>
-            <div className="flex justify-between">
+            <div className="flex justify-between items-center border-b border-primary/10 pb-2">
               <span className="font-bold text-primary">Preferred Session:</span>
-              <span>{sessionPref}</span>
+              <span className="font-medium">{sessionPref}</span>
             </div>
-            <div className="flex justify-between">
+            <div className="flex justify-between items-center">
               <span className="font-bold text-primary">Notification sent to:</span>
-              <span>{parentEmail}</span>
+              <span className="font-medium">{parentEmail}</span>
             </div>
           </div>
 
-          <div className="text-xs text-text-muted leading-relaxed space-y-2">
+          <div className="text-sm text-text-muted leading-relaxed space-y-3">
             <p>
-              <strong>What happens next?</strong> {professional.name} will review your inquiry and contact you directly at your provided email/phone to arrange a consultation.
+              <strong className="text-text">What happens next?</strong> {professional.name} will review your inquiry and contact you directly at your provided email/phone to arrange a consultation.
             </p>
-            <p className="font-medium text-accent">
+            <p className="font-medium text-accent bg-accent-light/50 px-4 py-2 rounded-xl border border-accent/20 inline-block">
               No service fees have been charged. All contract details are settled directly between you.
             </p>
           </div>
 
           <button
             onClick={onBack}
-            className="mt-8 w-full bg-[#2F6F6D] hover:bg-[#245654] text-[#FAFAF7] font-semibold py-3 px-6 rounded-xl calm-transition text-xs focus-visible:ring-2 focus-visible:ring-primary shadow-sm"
+            className="mt-10 w-full btn-primary text-sm py-3.5"
           >
             Return to Professional Profile
           </button>
@@ -109,49 +112,55 @@ export default function ContactForm({ professional, onBack, onSubmitInquiry }) {
   }
 
   return (
-    <div className="bg-[#FAFAF7] py-12 min-h-screen">
+    <div className="bg-background py-16 min-h-screen">
       <div className="layout-container max-w-2xl mx-auto">
         {/* Back navigation */}
         <button
           onClick={onBack}
-          className="flex items-center gap-2 text-xs font-bold text-primary hover:text-primary-hover mb-8 group focus-visible:ring-2 focus-visible:ring-primary rounded p-1 calm-transition"
+          className="inline-flex items-center gap-2 text-sm font-bold text-primary hover:text-primary-hover mb-10 group focus-visible:ring-2 focus-visible:ring-primary rounded-xl p-2 hover:bg-primary/5 transition-all duration-300"
         >
-          <ArrowLeft className="w-4 h-4 calm-transition group-hover:-translate-x-1" />
+          <ArrowLeft className="w-4 h-4 transition-transform duration-300 group-hover:-translate-x-1" />
           <span>Back to Profile</span>
         </button>
 
         {/* Form panel */}
-        <div className="bg-[#FAFAF7] border border-[#A7C4BC]/40 rounded-2xl p-6 md:p-10 shadow-sm space-y-6">
-          <div className="border-b border-[#A7C4BC]/25 pb-4">
-            <h1 className="text-2xl font-bold text-text">Request Vetted Support Contact</h1>
-            <p className="text-xs text-text-muted mt-1">
-              You are sending a secure inquiry request to <strong>{professional.name}</strong> ({professional.specialty}).
+        <div className="card-base p-6 md:p-10 space-y-8 animate-fade-in-up">
+          <div className="border-b border-secondary/25 pb-5">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 border border-primary/20 rounded-full text-primary text-xs font-semibold uppercase tracking-wider mb-4">
+              <Send className="w-3 h-3" />
+              <span>Secure Inquiry</span>
+            </div>
+            <h1 className="text-2xl md:text-3xl font-bold text-text">Request Vetted Support Contact</h1>
+            <p className="text-sm text-text-muted mt-2">
+              You are sending a secure inquiry request to <strong className="text-primary">{professional.name}</strong> ({professional.specialty}).
             </p>
           </div>
 
           {/* Verification note */}
-          <div className="bg-[#edf4f3] rounded-xl p-4 border border-primary/20 flex gap-3 text-xs text-text-muted leading-relaxed">
-            <ShieldCheck className="w-5 h-5 text-primary shrink-0 mt-0.5 fill-current" />
+          <div className="bg-primary-light/50 rounded-2xl p-5 border border-primary/15 flex gap-4 text-sm text-text-muted leading-relaxed shadow-soft">
+            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
+              <ShieldCheck className="w-5 h-5 fill-current" />
+            </div>
             <div>
-              <strong>Secure Verification Desk</strong>
-              <p className="mt-0.5">
+              <strong className="text-text block mb-0.5">Secure Verification Desk</strong>
+              <p>
                 Khair verifies clinical qualifications, licensing, and conduct checks before listings occur. We do not charge scheduling markups.
               </p>
             </div>
           </div>
 
           {error && (
-            <div className="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-xl">
-              <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
-              <p className="text-sm text-red-700">{error}</p>
+            <div className="flex items-start gap-3 p-5 bg-error/10 border border-error/20 rounded-2xl animate-fade-in-down">
+              <AlertCircle className="w-5 h-5 text-error flex-shrink-0 mt-0.5" />
+              <p className="text-sm text-error font-medium">{error}</p>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-6">
             {/* Parent Name */}
-            <div className="space-y-1">
-              <label htmlFor="parentName" className="text-[11px] font-bold uppercase tracking-wider text-text-muted block">
-                Parent Name <span className="text-red-500">*</span>
+            <div className="space-y-2">
+              <label htmlFor="parentName" className="text-xs font-bold uppercase tracking-wider text-text-muted block">
+                Parent Name <span className="text-error">*</span>
               </label>
               <input
                 id="parentName"
@@ -160,15 +169,15 @@ export default function ContactForm({ professional, onBack, onSubmitInquiry }) {
                 value={parentName}
                 onChange={(e) => setParentName(e.target.value)}
                 placeholder="Enter your full name"
-                className="w-full bg-[#FAFAF7] border border-[#A7C4BC]/45 rounded-xl py-2.5 px-3 text-sm text-text focus-visible:border-primary calm-transition"
+                className="w-full bg-background border border-secondary/40 rounded-xl py-3 px-4 text-sm text-text placeholder:text-text-light focus-visible:border-primary focus-visible:shadow-glow transition-all duration-300"
               />
             </div>
 
             {/* Email & Phone */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-1">
-                <label htmlFor="parentEmail" className="text-[11px] font-bold uppercase tracking-wider text-text-muted block">
-                  Email Address <span className="text-red-500">*</span>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <label htmlFor="parentEmail" className="text-xs font-bold uppercase tracking-wider text-text-muted block">
+                  Email Address <span className="text-error">*</span>
                 </label>
                 <input
                   id="parentEmail"
@@ -177,13 +186,13 @@ export default function ContactForm({ professional, onBack, onSubmitInquiry }) {
                   value={parentEmail}
                   onChange={(e) => setParentEmail(e.target.value)}
                   placeholder="name@domain.com"
-                  className="w-full bg-[#FAFAF7] border border-[#A7C4BC]/45 rounded-xl py-2.5 px-3 text-sm text-text focus-visible:border-primary calm-transition"
+                  className="w-full bg-background border border-secondary/40 rounded-xl py-3 px-4 text-sm text-text placeholder:text-text-light focus-visible:border-primary focus-visible:shadow-glow transition-all duration-300"
                 />
               </div>
 
-              <div className="space-y-1">
-                <label htmlFor="parentPhone" className="text-[11px] font-bold uppercase tracking-wider text-text-muted block">
-                  Phone Number <span className="text-red-500">*</span>
+              <div className="space-y-2">
+                <label htmlFor="parentPhone" className="text-xs font-bold uppercase tracking-wider text-text-muted block">
+                  Phone Number <span className="text-error">*</span>
                 </label>
                 <input
                   id="parentPhone"
@@ -192,16 +201,16 @@ export default function ContactForm({ professional, onBack, onSubmitInquiry }) {
                   value={parentPhone}
                   onChange={(e) => setParentPhone(e.target.value)}
                   placeholder="+971 50 123 4567"
-                  className="w-full bg-[#FAFAF7] border border-[#A7C4BC]/45 rounded-xl py-2.5 px-3 text-sm text-text focus-visible:border-primary calm-transition"
+                  className="w-full bg-background border border-secondary/40 rounded-xl py-3 px-4 text-sm text-text placeholder:text-text-light focus-visible:border-primary focus-visible:shadow-glow transition-all duration-300"
                 />
               </div>
             </div>
 
             {/* Child Age & Session Pref */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-1">
-                <label htmlFor="childAge" className="text-[11px] font-bold uppercase tracking-wider text-text-muted block">
-                  Child's Age or Grade <span className="text-red-500">*</span>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <label htmlFor="childAge" className="text-xs font-bold uppercase tracking-wider text-text-muted block">
+                  Child's Age or Grade <span className="text-error">*</span>
                 </label>
                 <input
                   id="childAge"
@@ -210,19 +219,19 @@ export default function ContactForm({ professional, onBack, onSubmitInquiry }) {
                   value={childAge}
                   onChange={(e) => setChildAge(e.target.value)}
                   placeholder="e.g., 6 years old / Grade 1"
-                  className="w-full bg-[#FAFAF7] border border-[#A7C4BC]/45 rounded-xl py-2.5 px-3 text-sm text-text focus-visible:border-primary calm-transition"
+                  className="w-full bg-background border border-secondary/40 rounded-xl py-3 px-4 text-sm text-text placeholder:text-text-light focus-visible:border-primary focus-visible:shadow-glow transition-all duration-300"
                 />
               </div>
 
-              <div className="space-y-1">
-                <label htmlFor="sessionPref" className="text-[11px] font-bold uppercase tracking-wider text-text-muted block">
+              <div className="space-y-2">
+                <label htmlFor="sessionPref" className="text-xs font-bold uppercase tracking-wider text-text-muted block">
                   Session Type Preference
                 </label>
                 <select
                   id="sessionPref"
                   value={sessionPref}
                   onChange={(e) => setSessionPref(e.target.value)}
-                  className="w-full bg-[#FAFAF7] border border-[#A7C4BC]/40 rounded-xl py-2.5 px-3 text-sm text-text focus-visible:border-primary calm-transition"
+                  className="w-full bg-background border border-secondary/40 rounded-xl py-3 px-4 text-sm text-text focus-visible:border-primary focus-visible:shadow-glow transition-all duration-300 cursor-pointer hover:border-secondary-dark"
                 >
                   <option value="Hybrid">Hybrid (Combination)</option>
                   <option value="In-person">In-person (Home / School)</option>
@@ -232,18 +241,18 @@ export default function ContactForm({ professional, onBack, onSubmitInquiry }) {
             </div>
 
             {/* Message / Needs */}
-            <div className="space-y-1">
-              <label htmlFor="needsDescription" className="text-[11px] font-bold uppercase tracking-wider text-text-muted block">
-                Primary Concerns / Support Needs <span className="text-red-500">*</span>
+            <div className="space-y-2">
+              <label htmlFor="needsDescription" className="text-xs font-bold uppercase tracking-wider text-text-muted block">
+                Primary Concerns / Support Needs <span className="text-error">*</span>
               </label>
               <textarea
                 id="needsDescription"
                 required
-                rows="4"
+                rows="5"
                 value={needsDescription}
                 onChange={(e) => setNeedsDescription(e.target.value)}
                 placeholder="Briefly describe what support you are looking for (e.g. Speech articulation, fine motor practice, dyslexia reading support)..."
-                className="w-full bg-[#FAFAF7] border border-[#A7C4BC]/45 rounded-xl py-2.5 px-3 text-sm text-text focus-visible:border-primary calm-transition resize-none"
+                className="w-full bg-background border border-secondary/40 rounded-xl py-3 px-4 text-sm text-text placeholder:text-text-light focus-visible:border-primary focus-visible:shadow-glow transition-all duration-300 resize-none"
               />
             </div>
 
@@ -251,9 +260,19 @@ export default function ContactForm({ professional, onBack, onSubmitInquiry }) {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-primary hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed text-[#FAFAF7] font-bold py-3.5 px-6 rounded-xl calm-transition text-xs focus-visible:ring-2 focus-visible:ring-primary shadow-sm mt-4"
+              className="w-full btn-primary text-sm py-4 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-soft"
             >
-              {isSubmitting ? 'Submitting...' : 'Submit Inquiry'}
+              {isSubmitting ? (
+                <span className="flex items-center justify-center gap-2">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Submitting...
+                </span>
+              ) : (
+                <span className="flex items-center justify-center gap-2">
+                  <Send className="w-4 h-4" />
+                  Submit Inquiry
+                </span>
+              )}
             </button>
           </form>
         </div>
