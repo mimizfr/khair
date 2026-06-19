@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Menu, X, Heart } from 'lucide-react';
+import { Menu, X, Heart, Shield, LogOut } from 'lucide-react';
 
-export default function Navbar({ currentPage, setCurrentPage }) {
+export default function Navbar({ currentPage, setCurrentPage, isAdmin, onLogout }) {
   const [isOpen, setIsOpen] = useState(false);
 
   const navItems = [
@@ -11,6 +11,11 @@ export default function Navbar({ currentPage, setCurrentPage }) {
     { id: 'community', label: 'Community' },
     { id: 'about', label: 'About' }
   ];
+
+  // Only show admin link if authenticated as admin
+  if (isAdmin) {
+    navItems.push({ id: 'admin', label: 'Dashboard', icon: Shield });
+  }
 
   const handleNavClick = (pageId) => {
     setCurrentPage(pageId);
@@ -55,6 +60,17 @@ export default function Navbar({ currentPage, setCurrentPage }) {
                 </button>
               );
             })}
+            
+            {/* Logout button for admin */}
+            {isAdmin && (
+              <button
+                onClick={onLogout}
+                className="flex items-center gap-1.5 text-sm text-red-600 hover:text-red-700 font-medium calm-transition py-2 px-3 rounded-lg hover:bg-red-50"
+              >
+                <LogOut className="w-4 h-4" />
+                Logout
+              </button>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -91,6 +107,15 @@ export default function Navbar({ currentPage, setCurrentPage }) {
               </button>
             );
           })}
+          
+          {isAdmin && (
+            <button
+              onClick={() => { onLogout(); setIsOpen(false); }}
+              className="block w-full text-left px-4 py-3 rounded-xl text-base font-medium text-red-600 hover:bg-red-50 calm-transition"
+            >
+              Logout
+            </button>
+          )}
         </div>
       )}
     </nav>

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { supabase } from './lib/supabase';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 
@@ -11,6 +12,7 @@ import ForEducators from './pages/ForEducators';
 import Community from './pages/Community';
 import About from './pages/About';
 import AdminDashboard from './pages/AdminDashboard';
+import AdminLogin from './pages/AdminLogin';
 
 // Mock seed data
 import { INITIAL_PROFESSIONALS } from './data/professionals';
@@ -19,19 +21,34 @@ export default function App() {
   const [currentPage, setCurrentPage] = useState('home');
   const [selectedProfessionalId, setSelectedProfessionalId] = useState(null);
   
-  // Database of professionals (can grow dynamically)
+  // Auth state
+  const [user, setUser] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
+
+  // Database of professionals
   const [professionals, setProfessionals] = useState(INITIAL_PROFESSIONALS);
-  
-  // Application reviews (submitted from ForEducators, reviewed in AdminDashboard)
   const [applications, setApplications] = useState([]);
-  
-  // Contact inquiries logged locally
   const [inquiries, setInquiries] = useState([]);
 
-  // Find currently selected professional
+  // Check Supabase session on mount
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+      setAuthLoading(false);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const isAdmin = user?.app_metadata?.role === 'admin' || user?.user_metadata?.role === 'admin';
+
   const selectedProfessional = professionals.find(p => p.id === selectedProfessionalId);
 
-  // Application Submission Handlers
+  // Application handlers
   const handleAddApplication = (newApp) => {
     setApplications(prev => [...prev, newApp]);
   };
@@ -40,12 +57,11 @@ export default function App() {
     const appToApprove = applications.find(app => app.id === appId);
     if (!appToApprove) return;
 
-    // Map the application fields into a verified professional profile format
     const newProfessional = {
       id: `prof-${Date.now()}`,
       name: appToApprove.name,
       specialty: appToApprove.specialty,
-      location: "Dubai", // Default UAE location for mock registry
+      location: "Dubai",
       experience: appToApprove.experience,
       priceRange: appToApprove.priceRange,
       languages: appToApprove.languages,
@@ -74,7 +90,6 @@ export default function App() {
       avatarBg: "from-[#A7C4BC] to-[#C89F7B]"
     };
 
-    // Update state directories
     setProfessionals(prev => [...prev, newProfessional]);
     setApplications(prev => prev.filter(app => app.id !== appId));
   };
@@ -83,13 +98,24 @@ export default function App() {
     setApplications(prev => prev.filter(app => app.id !== appId));
   };
 
-  // Contact Request Handlers
   const handleSubmitInquiry = (newInquiry) => {
     setInquiries(prev => [...prev, newInquiry]);
   };
 
-  // Render appropriate view based on routing state
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setCurrentPage('home');
+  };
+
   const renderPage = () => {
+    if (authLoading) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-[#FAFAF7]">
+          <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+        </div>
+      );
+    }
+
     switch (currentPage) {
       case 'home':
         return (
@@ -144,12 +170,18 @@ export default function App() {
       case 'about':
         return <About />;
       case 'admin':
+        //redirect to login if not admin
+        if (!isAdmin) {
+          return <AdminLogin onLoginSuccess={() => setCurrentPage('admin')} />;
+        }
         return (
           <AdminDashboard
             applications={applications}
             professionals={professionals}
             onApprove={handleApproveApplication}
             onReject={handleRejectApplication}
+            onLogout={handleLogout}
+            adminEmail={user?.email}
           />
         );
       default:
@@ -165,7 +197,12 @@ export default function App() {
 
   return (
     <div className="flex flex-col min-h-screen bg-[#FAFAF7]">
-      <Navbar currentPage={currentPage} setCurrentPage={setCurrentPage} />
+      <Navbar 
+        currentPage={currentPage} 
+        setCurrentPage={setCurrentPage} 
+        isAdmin={isAdmin}
+        onLogout={handleLogout}
+      />
       <main className="flex-grow">{renderPage()}</main>
       <Footer setCurrentPage={setCurrentPage} />
     </div>
