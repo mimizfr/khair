@@ -35,8 +35,8 @@ export default function FindProfessionals({ professionals, onSelectProfessional,
       if (selectedAvailability === 'Weekdays') return prof.availability === 'Weekdays' || prof.availability === 'Flexible';
       if (selectedAvailability === 'Weekends') return prof.availability === 'Weekends' || prof.availability === 'Flexible';
       if (selectedAvailability === 'Evenings') return prof.availability === 'Evenings' || prof.availability === 'Flexible';
-      if (selectedAvailability === 'Online') return prof.sessionTypes.includes('Online');
-      if (selectedAvailability === 'In-person') return prof.sessionTypes.includes('In-person');
+      if (selectedAvailability === 'Online') return (prof.session_types || prof.sessionTypes || []).includes('Online');
+      if (selectedAvailability === 'In-person') return (prof.session_types || prof.sessionTypes || []).includes('In-person');
       return true;
     })();
 
