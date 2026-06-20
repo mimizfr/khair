@@ -24,18 +24,17 @@ export default function ProfessionalCard({ professional, onViewProfile }) {
   };
 
   return (
-    /* 1. STABLE WRAPPER: Handles the hover trigger zone. 
-      The 'pt-2' creates a safe space for the card to translate upward without clipping or breaking the hover zone.
-    */
-    <div className="group pt-2">
+    // Stable wrapper maintains the hover zone boundary
+    <div className="group pt-1">
       <div 
-        className="card-base p-7 flex flex-col justify-between cursor-pointer transform transition-[transform,box-shadow] duration-300 ease-out group-hover:-translate-y-2 group-hover:shadow-card-hover"
+        className="card-base p-7 flex flex-col justify-between cursor-pointer transform transition-[transform,background-color,box-shadow] duration-300 ease-out group-hover:-translate-y-1 group-hover:bg-secondary/5 group-hover:shadow-card-hover"
       >
         <div>
           {/* Card Header: Avatar & Vetted Badge */}
           <div className="flex justify-between items-start gap-4 mb-6">
+            {/* REMOVED scale-110 to eliminate text/gradient rasterization lag */}
             <div 
-              className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${avatarBg || 'from-primary to-secondary'} flex items-center justify-center text-background font-semibold text-xl shadow-inner transition-[transform,box-shadow] duration-300 ease-out group-hover:scale-110 group-hover:shadow-glow`}
+              className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${avatarBg || 'from-primary to-secondary'} flex items-center justify-center text-background font-semibold text-xl shadow-inner transition-shadow duration-300 ease-out group-hover:shadow-glow`}
             >
               {getInitials(name)}
             </div>
@@ -89,7 +88,7 @@ export default function ProfessionalCard({ professional, onViewProfile }) {
             onClick={(e) => {
               e.stopPropagation();
               onViewProfile(id);
-            }}
+          }}
             className="w-full bg-background hover:bg-primary text-primary hover:text-background font-semibold py-3 px-4 rounded-xl border border-primary/30 hover:border-primary transition-[colors,box-shadow] duration-200 text-sm flex items-center justify-center gap-2 focus-visible:ring-2 focus-visible:ring-primary shadow-soft hover:shadow-glow group/btn"
           >
             <span>View Profile</span>
