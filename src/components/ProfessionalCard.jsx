@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ShieldCheck, MapPin, Briefcase, DollarSign, ArrowRight } from 'lucide-react';
 
 export default function ProfessionalCard({ professional, onViewProfile }) {
+  const [imgLoaded, setImgLoaded] = useState(false);
+  const [imgError, setImgError] = useState(false);
+
   const {
     id,
     name,
@@ -10,8 +13,11 @@ export default function ProfessionalCard({ professional, onViewProfile }) {
     experience,
     priceRange,
     verifiedBadge,
-    avatarBg
+    avatarBg,
+    photo_url
   } = professional;
+
+  const hasPhoto = photo_url && !imgError;
 
   const getInitials = (name) => {
     return name
@@ -23,20 +29,58 @@ export default function ProfessionalCard({ professional, onViewProfile }) {
       .toUpperCase();
   };
 
+  const getGradient = () => {
+    const gradients = [
+      'from-rose-400 to-orange-300',
+      'from-violet-400 to-purple-300',
+      'from-emerald-400 to-teal-300',
+      'from-sky-400 to-blue-300',
+      'from-amber-400 to-yellow-300'
+    ];
+    return gradients[name.length % gradients.length];
+  };
+
   return (
     <div className="group pt-1">
-      {}
       <div 
         className="card-base p-7 flex flex-col justify-between transform transition-[transform,background-color,box-shadow] duration-300 ease-out group-hover:-translate-y-1 group-hover:bg-secondary/5 group-hover:shadow-card-hover"
       >
         <div>
           {/* Card Header: Avatar & Vetted Badge */}
           <div className="flex justify-between items-start gap-4 mb-6">
-            <div 
-              className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${avatarBg || 'from-primary to-secondary'} flex items-center justify-center text-background font-semibold text-xl shadow-inner transition-shadow duration-300 ease-out group-hover:shadow-glow`}
-            >
-              {getInitials(name)}
+            {/* Avatar / Photo */}
+            <div className="relative shrink-0">
+              <div 
+                className={`
+                  w-16 h-16 rounded-2xl overflow-hidden shadow-inner transition-all duration-500 ease-out
+                  ${hasPhoto ? '' : `bg-gradient-to-br ${avatarBg || getGradient()} flex items-center justify-center text-background font-semibold text-xl`}
+                  group-hover:shadow-glow group-hover:scale-105
+                `}
+              >
+                {hasPhoto ? (
+                  <>
+                    {!imgLoaded && (
+                      <div className="absolute inset-0 bg-secondary/30 animate-pulse rounded-2xl" />
+                    )}
+                    <img
+                      src={photo_url}
+                      alt={name}
+                      onLoad={() => setImgLoaded(true)}
+                      onError={() => setImgError(true)}
+                      className={`w-full h-full object-cover transition-opacity duration-500 ${imgLoaded ? 'opacity-100' : 'opacity-0'}`}
+                    />
+                  </>
+                ) : (
+                  <span className="drop-shadow-sm">{getInitials(name)}</span>
+                )}
+              </div>
+
+              {/* Verified mini-badge on avatar */}
+              <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-background rounded-full flex items-center justify-center shadow-sm border border-secondary/20">
+                <ShieldCheck className="w-3 h-3 text-emerald-500 fill-emerald-500/20" />
+              </div>
             </div>
+
             <div className="badge badge-success shadow-soft transition-shadow duration-300 group-hover:shadow-md">
               <ShieldCheck className="w-3 h-3 fill-current" />
               <span>Vetted</span>
@@ -88,7 +132,6 @@ export default function ProfessionalCard({ professional, onViewProfile }) {
               e.stopPropagation();
               onViewProfile(id);
             }}
-           
             className="w-full bg-background hover:bg-primary text-primary hover:text-background font-semibold py-3 px-4 rounded-xl border border-primary/30 hover:border-primary cursor-pointer transition-[colors,box-shadow] duration-200 text-sm flex items-center justify-center gap-2 focus-visible:ring-2 focus-visible:ring-primary shadow-soft hover:shadow-glow group/btn"
           >
             <span>View Profile</span>
