@@ -1,6 +1,6 @@
 import React from 'react';
 import { Heart, Compass, ShieldCheck, Accessibility, Sparkles, Quote } from 'lucide-react';
-
+import missBisola from '../assets/testimonials/miss_bisola.jpg';
 export default function About() {
   return (
     <div className="bg-background">
@@ -40,22 +40,22 @@ export default function About() {
           <h2 className="text-3xl font-bold text-text border-b border-secondary/25 pb-3">The Origin of Khair</h2>
           <div className="space-y-5 text-base text-text-muted leading-relaxed">
             <p>
-              Khair (meaning "goodness" or "benevolence" in Arabic) was founded in 2026 by a team of educators and parents in Dubai who experienced firsthand the difficulty of locating qualified therapists for children with learning profiles.
+              Khair (meaning "goodness" or "benevolence" in Arabic) was founded in 2026 by Maryam Zafar, a Dubai-based entrepreneur who spent months listening to the struggles of families navigating special needs support across the UAE.
             </p>
             
             <div className="bg-accent-light/40 border-l-4 border-accent rounded-r-2xl p-8 my-8 relative shadow-soft">
               <Quote className="absolute top-4 left-4 w-8 h-8 text-accent/20" />
               <p className="italic text-text relative z-10 pl-4">
-                "When my son was diagnosed with ADHD and sensory processing difficulties, our family spent weeks calling clinics, validating credentials on outdated forums, and receiving mixed reviews. There was no single source of truth. I wanted a marketplace where license verification checkmarks were absolute and the user experience felt calm and trustworthy."
+                "After speaking with dozens of parents, therapists, and school administrators, I realized the problem wasn't a shortage of qualified specialists—it was a shortage of trust. Families were spending Dh50,000 a month on care, yet they had no simple way to verify credentials or compare options. I built Khair to be that calm, reliable source of truth."
               </p>
-              <span className="block mt-4 not-italic text-sm font-bold text-accent pl-4">— Mariam Al-Hadi, Founder of Khair</span>
+              <span className="block mt-4 not-italic text-sm font-bold text-accent pl-4">— Maryam Zafar, Founder of Khair</span>
             </div>
 
             <p>
-              We realized that the problem was not a lack of qualified specialists in the UAE, but rather a lack of visibility and a trust gap. Excellent therapists existed, but parents were forced to navigate a maze of unvetted forums and clinic markups to find them.
+              Though not a parent herself, Maryam deeply cares about the neurodivergent community and the families supporting them. Through extensive interviews with professionals and caregivers across Dubai, Abu Dhabi, and Sharjah, she identified a consistent pattern: excellent therapists existed, but parents were forced to navigate a maze of unvetted forums, clinic markups, and conflicting advice to find them.
             </p>
             <p>
-              Khair was built to solve this. We removed the clinic intermediates and platform commission markups. By verifying clinical credentials directly with government boards (DHA, MOH, ADEK) and presenting them clearly, we enable parents to search, compare, and establish direct contact with experts in a calm environment.
+              Khair was built to solve this. We removed the clinic intermediaries and platform commission markups. By verifying credentials directly with government boards (DHA, DOH, MOH, CDA, and ADEK) and presenting them clearly, we enable parents to search, compare, and establish direct contact with experts in a calm environment.
             </p>
           </div>
         </section>
@@ -148,6 +148,68 @@ export default function About() {
             </p>
           </div>
         </section>
+
+        {/* 5. COMMUNITY VOICES */}
+        <section className="space-y-8 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+          <h2 className="text-3xl font-bold text-text border-b border-secondary/25 pb-3">Voices from Our Community</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
+            
+            {/* Parent 1 */}
+            <div className="card-base p-6 flex flex-col gap-4 hover-lift">
+              <Quote className="w-8 h-8 text-primary/20" />
+              <p className="text-sm text-text-muted leading-relaxed flex-grow">
+                "We were spending over Dh40,000 a month on therapy and still had no way to verify if our son's therapist was properly licensed. Khair gave us peace of mind in minutes, not weeks."
+              </p>
+              <div className="flex items-center gap-3 pt-3 border-t border-secondary/20">
+                <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center text-accent font-bold text-sm">
+                  FR
+                </div>
+                <div>
+                  <p className="text-sm font-bold text-text">Fatima R.</p>
+                  <p className="text-xs text-text-muted">Mother of two, Dubai</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Parent 2 */}
+            <div className="card-base p-6 flex flex-col gap-4 hover-lift">
+              <Quote className="w-8 h-8 text-primary/20" />
+              <p className="text-sm text-text-muted leading-relaxed flex-grow">
+                "Finding a shadow teacher with actual credentials felt impossible. Through Khair, we connected with a verified special educator within days. The transparency changed everything for our family."
+              </p>
+              <div className="flex items-center gap-3 pt-3 border-t border-secondary/20">
+                <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center text-accent font-bold text-sm">
+                  AK
+                </div>
+                <div>
+                  <p className="text-sm font-bold text-text">Ahmed K.</p>
+                  <p className="text-xs text-text-muted">Father, Abu Dhabi</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Teacher - Miss Bisola */}
+            <div className="card-base p-6 flex flex-col gap-4 hover-lift">
+              <Quote className="w-8 h-8 text-primary/20" />
+              <p className="text-sm text-text-muted leading-relaxed flex-grow">
+                "As a special educator, I have watched families struggle for months to find verified support. Khair finally brings the transparency our community desperately needs. It is a game-changer for teachers and parents alike."
+              </p>
+              <div className="flex items-center gap-3 pt-3 border-t border-secondary/20">
+                <img 
+  src={missBisola} 
+  alt="Miss Bisola"
+  className="w-10 h-10 rounded-full object-cover border border-secondary/30"
+/>
+                <div>
+                  <p className="text-sm font-bold text-text">Miss Bisola</p>
+                  <p className="text-xs text-text-muted">Special Educator, Dubai</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
       </div>
     </div>
   );
