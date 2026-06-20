@@ -1,7 +1,7 @@
 import React from 'react';
 import { ShieldCheck, MapPin, Briefcase, DollarSign, ArrowRight } from 'lucide-react';
 
-export default function ProfessionalCard({ professional, onViewProfile }) {
+export default function ProfessionalCard({ professional, onViewProfile, onRequestContact }) {
   const {
     id,
     name,
@@ -58,22 +58,30 @@ export default function ProfessionalCard({ professional, onViewProfile }) {
             <div className="w-7 h-7 rounded-lg bg-secondary/20 flex items-center justify-center text-primary shrink-0">
               <Briefcase className="w-3.5 h-3.5" />
             </div>
-            <span className="font-medium">{experience} years exp</span>
+            <span className="font-medium">{experience} {experience === 1 ? 'year' : 'years'} exp</span>
           </div>
           <div className="flex items-center gap-2 col-span-2">
             <div className="w-7 h-7 rounded-lg bg-secondary/20 flex items-center justify-center text-primary shrink-0">
               <DollarSign className="w-3.5 h-3.5" />
             </div>
-            <span className="font-medium">{priceRange} AED / hour</span>
+            <span className="font-medium">
+              {priceRange ? priceRange : 'Price available on request'}
+            </span>
           </div>
         </div>
       </div>
 
-      {/* Action CTA */}
-      <div className="border-t border-secondary/25 pt-5 mt-5">
+      {/* Action CTA — Fixed: separate buttons, not nested */}
+      <div className="flex gap-3 pt-5 mt-5 border-t border-secondary/25">
+        <button
+          onClick={() => onRequestContact(id)}
+          className="flex-1 bg-primary text-background font-semibold py-3 px-4 rounded-xl text-sm shadow-soft hover:shadow-card transition-all"
+        >
+          Request Contact
+        </button>
         <button
           onClick={() => onViewProfile(id)}
-          className="w-full bg-background hover:bg-primary-light text-primary hover:text-primary-hover font-semibold py-3 px-4 rounded-xl border border-primary/30 transition-all duration-300 text-sm flex items-center justify-center gap-2 focus-visible:ring-2 focus-visible:ring-primary shadow-soft hover:shadow-card group/btn"
+          className="flex-1 bg-background text-primary font-semibold py-3 px-4 rounded-xl border border-primary/30 text-sm hover:bg-primary-light transition-all flex items-center justify-center gap-2 group/btn"
         >
           <span>View Profile</span>
           <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover/btn:translate-x-1" />
