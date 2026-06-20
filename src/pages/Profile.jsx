@@ -110,8 +110,7 @@ export default function Profile({ professional, onBack, onRequestContact }) {
                   <div className="w-9 h-9 rounded-lg bg-secondary/20 flex items-center justify-center text-primary shrink-0 transition-all duration-300 group-hover:bg-primary group-hover:text-white">
                     <DollarSign className="w-4 h-4" />
                   </div>
-                  <span>Fee Range: <strong className="text-text">{priceRange || 'N/A'} AED / hour</strong></span>
-                </div>
+                      <span>Fee Range: <strong className="text-text">{priceRange ? `${priceRange} AED / hour` : 'Price available on request'}</strong></span>                </div>
                 <div className="flex items-center gap-3 text-text/80 group">
                   <div className="w-9 h-9 rounded-lg bg-secondary/20 flex items-center justify-center text-primary shrink-0 transition-all duration-300 group-hover:bg-primary group-hover:text-white">
                     <Languages className="w-4 h-4" />
