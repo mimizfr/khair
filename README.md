@@ -1,16 +1,66 @@
-# React + Vite
+# Khair خير
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> Connecting parents of neurodivergent children in the UAE with vetted, licensed educational support professionals, therapists, and learning specialists.
 
-Currently, two official plugins are available:
+[![Live Site](https://img.shields.io/badge/Live-khair.social-4A90D9?style=flat-square&logo=vercel)](https://www.khair.social)
+![Status](https://img.shields.io/badge/Status-Active-brightgreen?style=flat-square)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## Overview
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+**Khair** (خير — Arabic for *goodness*) is a trust-first platform built to solve a real problem faced by families in the UAE: finding reliable, licensed professionals to support neurodivergent children.
 
-## Expanding the ESLint configuration
+Parents often navigate fragmented information, unverified listings, and language barriers when searching for therapists, special education teachers, and learning support specialists. Khair centralises this, every professional on the platform is verified and licensed, so families can search with confidence.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## Features
+
+- **Verified Specialist Directory** — Professionals are vetted and licensed before listing
+- **Neurodivergent-Focused** — Tailored for ASD, ADHD, dyslexia, and other learning differences
+- **UAE-Specific** — Localised for the UAE's regulatory and cultural context
+- **Parent-First UX** — Designed for ease of use by families, not just professionals
+- **Professional Profiles** — Credentials, specialisations, languages, and contact details in one place
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Frontend | React |
+| Styling | Tailwind CSS |
+| Backend | Supabase |
+| Hosting | Vercel |
+| Domain | khair.social |
+
+---
+
+## Contributing
+
+Contributions are welcome. Please open an issue first to discuss any changes before submitting a pull request.
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/your-feature`)
+3. Commit your changes (`git commit -m 'Add: your feature'`)
+4. Push to the branch (`git push origin feature/your-feature`)
+5. Open a Pull Request
+
+---
+
+## License
+
+This project is proprietary. All rights reserved © Khair 2026.
+
+---
+
+## Contact
+
+For partnerships, professional listings, or support enquiries:
+
+- **Website:** [khair.social](https://www.khair.social)
+
+---
+
+*Built with care for families across the UAE.*

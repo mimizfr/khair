@@ -5,7 +5,6 @@ import ProfessionalCard from '../components/ProfessionalCard';
 export default function Home({ professionals, setCurrentPage, setSelectedProfessionalId }) {
   const [activeFaq, setActiveFaq] = useState(null);
 
-  // Take first 3 professionals for preview cards
   const featuredProfs = professionals.slice(0, 3);
 
   const toggleFaq = (index) => {
@@ -53,30 +52,36 @@ export default function Home({ professionals, setCurrentPage, setSelectedProfess
   ];
 
   return (
-    <div className="bg-[#FAFAF7]">
+    <div className="bg-background">
       {/* 1. HERO SECTION */}
-      <section className="bg-gradient-to-b from-[#edf4f3] to-[#FAFAF7] py-20 md:py-28">
-        <div className="layout-container text-center max-w-3xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 border border-primary/20 rounded-full text-primary text-xs font-semibold uppercase tracking-wider mb-6">
+      <section className="relative bg-gradient-to-b from-primary-light/60 to-background pt-24 pb-28 md:pt-32 md:pb-36 overflow-hidden">
+        {/* Decorative background elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-20 left-10 w-72 h-72 bg-secondary/20 rounded-full blur-3xl opacity-60 animate-float" />
+          <div className="absolute bottom-10 right-10 w-96 h-96 bg-accent/10 rounded-full blur-3xl opacity-40 animate-float" style={{ animationDelay: '3s' }} />
+        </div>
+        
+        <div className="layout-container text-center max-w-3xl relative z-10">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-primary/10 border border-primary/20 rounded-full text-primary text-xs font-semibold uppercase tracking-wider mb-8 animate-fade-in-up">
             <ShieldCheck className="w-3.5 h-3.5" />
             <span>Vetted Special Needs Support in the UAE</span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-extrabold text-text leading-tight tracking-tight">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-text leading-tight tracking-tight animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
             Connecting parents with trusted educational support
           </h1>
-          <p className="text-lg text-text-muted mt-6 leading-relaxed">
+          <p className="text-lg md:text-xl text-text-muted mt-6 leading-relaxed max-w-2xl mx-auto animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
             Find verified therapists, special educators, and learning specialists for your child in a calm, stress-free marketplace built for families in the UAE.
           </p>
-          <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
             <button
               onClick={handleFindClick}
-              className="bg-[#2F6F6D] hover:bg-[#245654] text-[#FAFAF7] font-semibold py-4 px-8 rounded-xl calm-transition text-base shadow-sm focus-visible:ring-2 focus-visible:ring-primary"
+              className="btn-primary text-base py-4 px-8 shadow-card hover:shadow-glow"
             >
               Find Professionals
             </button>
             <button
               onClick={handleAboutClick}
-              className="bg-[#FAFAF7] hover:bg-secondary-light text-primary font-semibold py-4 px-8 rounded-xl border border-primary/30 calm-transition text-base focus-visible:ring-2 focus-visible:ring-primary shadow-sm"
+              className="btn-secondary text-base py-4 px-8"
             >
               Learn More
             </button>
@@ -85,18 +90,18 @@ export default function Home({ professionals, setCurrentPage, setSelectedProfess
       </section>
 
       {/* 2. USER-TYPE SECTION */}
-      <section className="py-16 bg-[#FAFAF7] border-y border-[#A7C4BC]/20">
+      <section className="section-padding bg-background border-y border-secondary/15">
         <div className="layout-container">
-          <div className="text-center max-w-2xl mx-auto mb-12">
-            <h2 className="text-3xl font-bold text-text">Who We Support</h2>
-            <p className="text-sm text-text-muted mt-2">Tailored experiences for the entire care network.</p>
+          <div className="text-center max-w-2xl mx-auto mb-14">
+            <h2 className="text-3xl md:text-4xl font-bold text-text">Who We Support</h2>
+            <p className="text-base text-text-muted mt-3">Tailored experiences for the entire care network.</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 stagger-children">
             {/* Parents Card */}
-            <div className="bg-[#FAFAF7] border border-[#A7C4BC]/40 rounded-2xl p-8 flex flex-col justify-between calm-transition hover:border-primary/50 shadow-sm">
-              <div className="space-y-4">
-                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-                  <Heart className="w-6 h-6 fill-current" />
+            <div className="card-base p-8 flex flex-col justify-between group">
+              <div className="space-y-5">
+                <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary transition-all duration-300 group-hover:bg-primary group-hover:text-white group-hover:shadow-glow">
+                  <Heart className="w-7 h-7 fill-current" />
                 </div>
                 <h3 className="text-xl font-bold text-text">For Parents</h3>
                 <p className="text-sm text-text-muted leading-relaxed">
@@ -105,18 +110,18 @@ export default function Home({ professionals, setCurrentPage, setSelectedProfess
               </div>
               <button
                 onClick={handleFindClick}
-                className="mt-6 text-left text-sm font-bold text-primary hover:text-primary-hover flex items-center gap-1 group calm-transition"
+                className="mt-6 text-left text-sm font-bold text-primary hover:text-primary-hover flex items-center gap-1.5 group/btn transition-all duration-300"
               >
                 <span>Search the directory</span>
-                <span className="calm-transition group-hover:translate-x-1">&rarr;</span>
+                <span className="transition-transform duration-300 group-hover/btn:translate-x-1">&rarr;</span>
               </button>
             </div>
 
             {/* Educators Card */}
-            <div className="bg-[#FAFAF7] border border-[#A7C4BC]/40 rounded-2xl p-8 flex flex-col justify-between calm-transition hover:border-primary/50 shadow-sm">
-              <div className="space-y-4">
-                <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center text-accent">
-                  <Sparkles className="w-6 h-6" />
+            <div className="card-base p-8 flex flex-col justify-between group">
+              <div className="space-y-5">
+                <div className="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center text-accent transition-all duration-300 group-hover:bg-accent group-hover:text-white group-hover:shadow-lg">
+                  <Sparkles className="w-7 h-7" />
                 </div>
                 <h3 className="text-xl font-bold text-text">For Educators</h3>
                 <p className="text-sm text-text-muted leading-relaxed">
@@ -125,18 +130,18 @@ export default function Home({ professionals, setCurrentPage, setSelectedProfess
               </div>
               <button
                 onClick={handleJoinClick}
-                className="mt-6 text-left text-sm font-bold text-accent hover:text-accent-hover flex items-center gap-1 group calm-transition"
+                className="mt-6 text-left text-sm font-bold text-accent hover:text-accent-hover flex items-center gap-1.5 group/btn transition-all duration-300"
               >
                 <span>Apply as professional</span>
-                <span className="calm-transition group-hover:translate-x-1">&rarr;</span>
+                <span className="transition-transform duration-300 group-hover/btn:translate-x-1">&rarr;</span>
               </button>
             </div>
 
             {/* Organizations Card */}
-            <div className="bg-[#FAFAF7] border border-[#A7C4BC]/40 rounded-2xl p-8 flex flex-col justify-between calm-transition hover:border-primary/50 shadow-sm">
-              <div className="space-y-4">
-                <div className="w-12 h-12 rounded-xl bg-secondary/20 flex items-center justify-center text-primary">
-                  <Users className="w-6 h-6" />
+            <div className="card-base p-8 flex flex-col justify-between group">
+              <div className="space-y-5">
+                <div className="w-14 h-14 rounded-2xl bg-secondary/30 flex items-center justify-center text-primary transition-all duration-300 group-hover:bg-primary group-hover:text-white group-hover:shadow-glow">
+                  <Users className="w-7 h-7" />
                 </div>
                 <h3 className="text-xl font-bold text-text">For Organizations</h3>
                 <p className="text-sm text-text-muted leading-relaxed">
@@ -148,10 +153,10 @@ export default function Home({ professionals, setCurrentPage, setSelectedProfess
                   setCurrentPage('about');
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
-                className="mt-6 text-left text-sm font-bold text-primary hover:text-primary-hover flex items-center gap-1 group calm-transition"
+                className="mt-6 text-left text-sm font-bold text-primary hover:text-primary-hover flex items-center gap-1.5 group/btn transition-all duration-300"
               >
                 <span>Read our mission</span>
-                <span className="calm-transition group-hover:translate-x-1">&rarr;</span>
+                <span className="transition-transform duration-300 group-hover/btn:translate-x-1">&rarr;</span>
               </button>
             </div>
           </div>
@@ -159,10 +164,10 @@ export default function Home({ professionals, setCurrentPage, setSelectedProfess
       </section>
 
       {/* 3. PROBLEM SECTION */}
-      <section className="py-20 bg-[#FAFAF7]">
+      <section className="section-padding bg-background">
         <div className="layout-container">
-          <div className="bg-[#faf6f2] border border-accent/25 rounded-3xl p-8 md:p-12 flex flex-col md:flex-row gap-10 items-center">
-            <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-accent/10 flex items-center justify-center text-accent shrink-0">
+          <div className="bg-accent-light/60 border border-accent/20 rounded-3xl p-8 md:p-14 flex flex-col md:flex-row gap-10 items-center hover-lift">
+            <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-accent/10 flex items-center justify-center text-accent shrink-0 transition-all duration-300 hover:bg-accent hover:text-white hover:shadow-lg">
               <AlertCircle className="w-8 h-8 md:w-10 md:h-10" />
             </div>
             <div>
@@ -181,17 +186,20 @@ export default function Home({ professionals, setCurrentPage, setSelectedProfess
       </section>
 
       {/* 4. HOW IT WORKS (3 Steps) */}
-      <section className="py-20 bg-[#edf4f3]/50 border-t border-[#A7C4BC]/10">
+      <section className="section-padding bg-primary-light/30 border-t border-secondary/10">
         <div className="layout-container">
           <div className="text-center max-w-2xl mx-auto mb-16">
-            <h2 className="text-3xl font-bold text-text">How Khair Works</h2>
-            <p className="text-sm text-text-muted mt-3">Simple, clear steps to secure verified support.</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-text">How Khair Works</h2>
+            <p className="text-base text-text-muted mt-3">Simple, clear steps to secure verified support.</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative stagger-children">
+            {/* Connector line for desktop */}
+            <div className="hidden md:block absolute top-6 left-[16.67%] right-[16.67%] h-0.5 bg-gradient-to-r from-primary via-secondary to-accent opacity-30" />
+            
             {/* Step 1 */}
-            <div className="text-center space-y-4">
-              <div className="w-12 h-12 rounded-full bg-primary text-[#FAFAF7] font-bold text-lg flex items-center justify-center mx-auto shadow-sm">
+            <div className="text-center space-y-5 relative z-10">
+              <div className="w-14 h-14 rounded-full bg-primary text-background font-bold text-xl flex items-center justify-center mx-auto shadow-card hover:shadow-glow transition-all duration-300 hover:scale-110">
                 1
               </div>
               <h3 className="text-xl font-bold text-text">Search and Filter</h3>
@@ -201,8 +209,8 @@ export default function Home({ professionals, setCurrentPage, setSelectedProfess
             </div>
 
             {/* Step 2 */}
-            <div className="text-center space-y-4">
-              <div className="w-12 h-12 rounded-full bg-primary text-[#FAFAF7] font-bold text-lg flex items-center justify-center mx-auto shadow-sm">
+            <div className="text-center space-y-5 relative z-10">
+              <div className="w-14 h-14 rounded-full bg-primary text-background font-bold text-xl flex items-center justify-center mx-auto shadow-card hover:shadow-glow transition-all duration-300 hover:scale-110">
                 2
               </div>
               <h3 className="text-xl font-bold text-text">Review Vetted Profiles</h3>
@@ -212,8 +220,8 @@ export default function Home({ professionals, setCurrentPage, setSelectedProfess
             </div>
 
             {/* Step 3 */}
-            <div className="text-center space-y-4">
-              <div className="w-12 h-12 rounded-full bg-[#C89F7B] text-[#FAFAF7] font-bold text-lg flex items-center justify-center mx-auto shadow-sm">
+            <div className="text-center space-y-5 relative z-10">
+              <div className="w-14 h-14 rounded-full bg-accent text-background font-bold text-xl flex items-center justify-center mx-auto shadow-card hover:shadow-lg transition-all duration-300 hover:scale-110">
                 3
               </div>
               <h3 className="text-xl font-bold text-text">Connect Directly</h3>
@@ -226,22 +234,22 @@ export default function Home({ professionals, setCurrentPage, setSelectedProfess
       </section>
 
       {/* 5. FEATURED PROFESSIONALS */}
-      <section className="py-20 bg-[#FAFAF7]">
+      <section className="section-padding bg-background">
         <div className="layout-container">
-          <div className="flex flex-col sm:flex-row justify-between items-center mb-12 gap-4">
+          <div className="flex flex-col sm:flex-row justify-between items-center mb-14 gap-4">
             <div>
-              <h2 className="text-3xl font-bold text-text">Featured Professionals</h2>
-              <p className="text-sm text-text-muted mt-1">Vetted specialists with active availability in the UAE.</p>
+              <h2 className="text-3xl md:text-4xl font-bold text-text">Featured Professionals</h2>
+              <p className="text-base text-text-muted mt-1">Vetted specialists with active availability in the UAE.</p>
             </div>
             <button
               onClick={handleFindClick}
-              className="text-sm font-bold text-primary hover:text-primary-hover border-b border-primary pb-0.5 calm-transition"
+              className="text-sm font-bold text-primary hover:text-primary-hover border-b-2 border-primary pb-1 transition-all duration-300 hover:gap-2"
             >
               View All Directory
             </button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 stagger-children">
             {featuredProfs.map((prof) => (
               <ProfessionalCard 
                 key={prof.id} 
@@ -254,78 +262,78 @@ export default function Home({ professionals, setCurrentPage, setSelectedProfess
       </section>
 
       {/* 6. TRUST & VERIFICATION */}
-      <section className="py-20 bg-[#FAFAF7] border-t border-[#A7C4BC]/25">
+      <section className="section-padding bg-background border-t border-secondary/20">
         <div className="layout-container">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-6">
-              <div className="inline-flex items-center gap-1 px-3 py-1 bg-accent/10 border border-accent/20 rounded-full text-accent text-xs font-semibold uppercase tracking-wider">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
+            <div className="space-y-7">
+              <div className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-accent/10 border border-accent/20 rounded-full text-accent text-xs font-semibold uppercase tracking-wider">
                 <span>Verification Rigor</span>
               </div>
-              <h2 className="text-3xl font-bold text-text leading-tight">
+              <h2 className="text-3xl md:text-4xl font-bold text-text leading-tight">
                 Our Vetting Standard: Why You Can Trust Khair
               </h2>
-              <p className="text-sm text-text-muted leading-relaxed">
+              <p className="text-base text-text-muted leading-relaxed">
                 We believe parents shouldn't have to second-guess the credentials of those caring for their child. Our safety desk checks every detail:
               </p>
 
-              <div className="space-y-4">
-                <div className="flex items-start gap-3">
-                  <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center text-primary mt-1">
-                    <ShieldCheck className="w-3.5 h-3.5 fill-current" />
+              <div className="space-y-5">
+                <div className="flex items-start gap-4 group">
+                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary mt-0.5 transition-all duration-300 group-hover:bg-primary group-hover:text-white group-hover:shadow-glow shrink-0">
+                    <ShieldCheck className="w-5 h-5 fill-current" />
                   </div>
                   <div>
-                    <h4 className="text-sm font-bold text-text">Healthcare License Validation</h4>
-                    <p className="text-xs text-text-muted">Direct validation of DHA, HAAD, or MOH clinical licenses.</p>
+                    <h4 className="text-base font-bold text-text">Healthcare License Validation</h4>
+                    <p className="text-sm text-text-muted mt-1">Direct validation of DHA, HAAD, or MOH clinical licenses.</p>
                   </div>
                 </div>
 
-                <div className="flex items-start gap-3">
-                  <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center text-primary mt-1">
-                    <ShieldCheck className="w-3.5 h-3.5 fill-current" />
+                <div className="flex items-start gap-4 group">
+                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary mt-0.5 transition-all duration-300 group-hover:bg-primary group-hover:text-white group-hover:shadow-glow shrink-0">
+                    <ShieldCheck className="w-5 h-5 fill-current" />
                   </div>
                   <div>
-                    <h4 className="text-sm font-bold text-text">Ministry Degree Authentication</h4>
-                    <p className="text-xs text-text-muted">Verification of educational transcripts and local Ministry equivalency.</p>
+                    <h4 className="text-base font-bold text-text">Ministry Degree Authentication</h4>
+                    <p className="text-sm text-text-muted mt-1">Verification of educational transcripts and local Ministry equivalency.</p>
                   </div>
                 </div>
 
-                <div className="flex items-start gap-3">
-                  <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center text-primary mt-1">
-                    <ShieldCheck className="w-3.5 h-3.5 fill-current" />
+                <div className="flex items-start gap-4 group">
+                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary mt-0.5 transition-all duration-300 group-hover:bg-primary group-hover:text-white group-hover:shadow-glow shrink-0">
+                    <ShieldCheck className="w-5 h-5 fill-current" />
                   </div>
                   <div>
-                    <h4 className="text-sm font-bold text-text">Background & Reference Screening</h4>
-                    <p className="text-xs text-text-muted">Background checks and review of references from verified clinics/schools.</p>
+                    <h4 className="text-base font-bold text-text">Background & Reference Screening</h4>
+                    <p className="text-sm text-text-muted mt-1">Background checks and review of references from verified clinics/schools.</p>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Vetting Visual Display */}
-            <div className="bg-[#edf4f3] rounded-2xl p-8 border border-primary/20 space-y-4">
-              <h3 className="text-lg font-bold text-primary flex items-center gap-2">
-                <ShieldCheck className="w-5 h-5 fill-current" />
+            <div className="bg-primary-light/50 rounded-3xl p-8 md:p-10 border border-primary/15 space-y-6 hover-lift">
+              <h3 className="text-xl font-bold text-primary flex items-center gap-2.5">
+                <ShieldCheck className="w-6 h-6 fill-current" />
                 <span>Verification Status Desk</span>
               </h3>
-              <div className="border border-white/50 bg-[#FAFAF7]/80 rounded-xl p-5 space-y-3.5 text-xs">
-                <div className="flex justify-between items-center border-b border-primary/10 pb-2">
+              <div className="bg-surface/80 rounded-2xl p-6 space-y-4 text-sm border border-white/50 shadow-soft">
+                <div className="flex justify-between items-center border-b border-primary/10 pb-3">
                   <span className="font-medium text-text">DHA / MOH Clinical License</span>
-                  <span className="bg-[#eef6f5] text-primary border border-primary/20 font-bold px-2 py-0.5 rounded uppercase text-[10px]">Direct Verified</span>
+                  <span className="badge badge-success">Direct Verified</span>
                 </div>
-                <div className="flex justify-between items-center border-b border-primary/10 pb-2">
+                <div className="flex justify-between items-center border-b border-primary/10 pb-3">
                   <span className="font-medium text-text">Educational Degrees (M.Ed, PhD, BSc)</span>
-                  <span className="bg-[#eef6f5] text-primary border border-primary/20 font-bold px-2 py-0.5 rounded uppercase text-[10px]">MOE Authenticated</span>
+                  <span className="badge badge-success">MOE Authenticated</span>
                 </div>
-                <div className="flex justify-between items-center border-b border-primary/10 pb-2">
+                <div className="flex justify-between items-center border-b border-primary/10 pb-3">
                   <span className="font-medium text-text">Police Good Conduct Check</span>
-                  <span className="bg-[#eef6f5] text-primary border border-primary/20 font-bold px-2 py-0.5 rounded uppercase text-[10px]">Cleared</span>
+                  <span className="badge badge-success">Cleared</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="font-medium text-text">Clinical Onboarding Interview</span>
-                  <span className="bg-[#eef6f5] text-primary border border-primary/20 font-bold px-2 py-0.5 rounded uppercase text-[10px]">Approved</span>
+                  <span className="badge badge-success">Approved</span>
                 </div>
               </div>
-              <p className="text-[11px] text-text-muted leading-relaxed">
+              <p className="text-xs text-text-muted leading-relaxed">
                 * Note: Licenses are re-verified every 12 months to ensure continuous legal practice compliance in the UAE.
               </p>
             </div>
@@ -333,47 +341,47 @@ export default function Home({ professionals, setCurrentPage, setSelectedProfess
         </div>
       </section>
 
-      {/* 7. COMMUNITY PREVIEW (Secondary Importance) */}
-      <section className="py-20 bg-[#edf4f3]/30 border-y border-[#A7C4BC]/10">
+      {/* 7. COMMUNITY PREVIEW */}
+      <section className="section-padding bg-primary-light/20 border-y border-secondary/10">
         <div className="layout-container">
-          <div className="flex flex-col sm:flex-row justify-between items-center mb-12 gap-4">
+          <div className="flex flex-col sm:flex-row justify-between items-center mb-14 gap-4">
             <div>
-              <h2 className="text-2xl font-bold text-text">Community Support & Events</h2>
-              <p className="text-sm text-text-muted mt-1">Informational parent webinars, worksheets, and resources.</p>
+              <h2 className="text-2xl md:text-3xl font-bold text-text">Community Support & Events</h2>
+              <p className="text-base text-text-muted mt-1">Informational parent webinars, worksheets, and resources.</p>
             </div>
             <button
               onClick={() => {
                 setCurrentPage('community');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              className="text-xs font-bold text-primary hover:text-primary-hover border border-primary/20 px-4 py-2 rounded-xl bg-white hover:bg-primary-light calm-transition"
+              className="btn-secondary text-sm"
             >
               Browse Community Page
             </button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="bg-[#FAFAF7] border border-[#A7C4BC]/40 rounded-2xl p-6 flex gap-4">
-              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
-                <Users className="w-5 h-5" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 stagger-children">
+            <div className="card-base p-7 flex gap-5 group">
+              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0 transition-all duration-300 group-hover:bg-primary group-hover:text-white group-hover:shadow-glow">
+                <Users className="w-6 h-6" />
               </div>
               <div>
-                <span className="text-[10px] font-bold text-accent uppercase tracking-wider">Webinar • June 18, 2026</span>
-                <h4 className="text-base font-bold text-text mt-1">Sensory Friendly Environments at Home</h4>
-                <p className="text-xs text-text-muted mt-2 leading-relaxed">
+                <span className="text-xs font-bold text-accent uppercase tracking-wider">Webinar • June 18, 2026</span>
+                <h4 className="text-lg font-bold text-text mt-1.5">Sensory Friendly Environments at Home</h4>
+                <p className="text-sm text-text-muted mt-2 leading-relaxed">
                   Join Occupational Therapist Yasmin Haddad for a practical workshop on setting up low-sensory homework and relaxation spaces.
                 </p>
               </div>
             </div>
 
-            <div className="bg-[#FAFAF7] border border-[#A7C4BC]/40 rounded-2xl p-6 flex gap-4">
-              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
-                <BookOpen className="w-5 h-5" />
+            <div className="card-base p-7 flex gap-5 group">
+              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0 transition-all duration-300 group-hover:bg-primary group-hover:text-white group-hover:shadow-glow">
+                <BookOpen className="w-6 h-6" />
               </div>
               <div>
-                <span className="text-[10px] font-bold text-accent uppercase tracking-wider">Resource Guide • PDF</span>
-                <h4 className="text-base font-bold text-text mt-1">Navigating IEPs in UAE Schools</h4>
-                <p className="text-xs text-text-muted mt-2 leading-relaxed">
+                <span className="text-xs font-bold text-accent uppercase tracking-wider">Resource Guide • PDF</span>
+                <h4 className="text-lg font-bold text-text mt-1.5">Navigating IEPs in UAE Schools</h4>
+                <p className="text-sm text-text-muted mt-2 leading-relaxed">
                   A step-by-step checklist explaining how to request and establish an Individualized Education Plan (IEP) in UAE curriculum structures.
                 </p>
               </div>
@@ -382,37 +390,45 @@ export default function Home({ professionals, setCurrentPage, setSelectedProfess
         </div>
       </section>
 
-      {/* 8. FAQ SECTION (Interactive Accordions) */}
-      <section className="py-20 bg-[#FAFAF7]">
+      {/* 8. FAQ SECTION */}
+      <section className="section-padding bg-background">
         <div className="layout-container max-w-3xl">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-text">Frequently Asked Questions</h2>
-            <p className="text-sm text-text-muted mt-2">Answers to common questions about vetting and session coordination.</p>
+          <div className="text-center mb-14">
+            <h2 className="text-3xl md:text-4xl font-bold text-text">Frequently Asked Questions</h2>
+            <p className="text-base text-text-muted mt-2">Answers to common questions about vetting and session coordination.</p>
           </div>
 
           <div className="space-y-4">
             {faqs.map((faq, index) => (
               <div 
                 key={index} 
-                className="bg-[#FAFAF7] border border-[#A7C4BC]/45 rounded-2xl calm-transition overflow-hidden"
+                className="bg-surface border border-secondary/30 rounded-2xl overflow-hidden transition-all duration-400 hover:border-secondary/50"
               >
                 <button
                   onClick={() => toggleFaq(index)}
-                  className="w-full flex justify-between items-center p-5 text-left text-text font-semibold hover:text-primary calm-transition focus:outline-none"
+                  className="w-full flex justify-between items-center p-6 text-left text-text font-semibold transition-all duration-300 hover:text-primary focus:outline-none"
                   aria-expanded={activeFaq === index}
                 >
-                  <span className="text-base">{faq.q}</span>
-                  {activeFaq === index ? (
-                    <ChevronUp className="w-5 h-5 text-primary" />
-                  ) : (
-                    <ChevronDown className="w-5 h-5 text-text/60" />
-                  )}
+                  <span className="text-base pr-4">{faq.q}</span>
+                  <span className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${
+                    activeFaq === index ? 'bg-primary text-white rotate-180' : 'bg-primary/10 text-primary'
+                  }`}>
+                    {activeFaq === index ? (
+                      <ChevronUp className="w-4 h-4" />
+                    ) : (
+                      <ChevronDown className="w-4 h-4" />
+                    )}
+                  </span>
                 </button>
-                {activeFaq === index && (
-                  <div className="px-5 pb-5 pt-1 text-sm text-text-muted leading-relaxed border-t border-[#A7C4BC]/20">
-                    {faq.a}
+                <div className={`overflow-hidden transition-all duration-500 ease-calm ${
+                  activeFaq === index ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+                }`}>
+                  <div className="px-6 pb-6 pt-0 text-sm text-text-muted leading-relaxed border-t border-secondary/20">
+                    <div className="pt-4">
+                      {faq.a}
+                    </div>
                   </div>
-                )}
+                </div>
               </div>
             ))}
           </div>
@@ -420,22 +436,26 @@ export default function Home({ professionals, setCurrentPage, setSelectedProfess
       </section>
 
       {/* 9. FINAL CTA */}
-      <section className="py-20 bg-[#1F2933] text-[#FAFAF7]">
-        <div className="layout-container text-center max-w-2xl">
-          <h2 className="text-3xl font-bold text-secondary">Find Vetted Support Today</h2>
-          <p className="text-sm text-[#FAFAF7]/85 mt-4 leading-relaxed">
+      <section className="py-24 bg-text text-background relative overflow-hidden">
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary rounded-full blur-3xl" />
+          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-accent rounded-full blur-3xl" />
+        </div>
+        <div className="layout-container text-center max-w-2xl relative z-10">
+          <h2 className="text-3xl md:text-4xl font-bold text-secondary">Find Vetted Support Today</h2>
+          <p className="text-base text-background/85 mt-5 leading-relaxed">
             Take a gentle step forward. Connect with verified occupational therapists, speech therapists, behavior experts, and special educators located in the UAE.
           </p>
-          <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
             <button
               onClick={handleFindClick}
-              className="bg-[#2F6F6D] hover:bg-[#245654] text-[#FAFAF7] font-semibold py-3.5 px-8 rounded-xl calm-transition text-sm border border-[#A7C4BC]/30 shadow-sm"
+              className="btn-primary text-sm py-4 px-8"
             >
               Find Professionals
             </button>
             <button
               onClick={handleJoinClick}
-              className="bg-transparent hover:bg-white/10 text-secondary font-semibold py-3.5 px-8 rounded-xl border border-secondary/40 calm-transition text-sm"
+              className="inline-flex items-center justify-center gap-2 text-sm font-semibold py-4 px-8 rounded-xl border border-secondary/40 text-secondary hover:bg-white/10 transition-all duration-300"
             >
               Educator Registration
             </button>
