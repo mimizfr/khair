@@ -24,15 +24,14 @@ export default function ProfessionalCard({ professional, onViewProfile }) {
   };
 
   return (
-    // Stable wrapper maintains the hover zone boundary
     <div className="group pt-1">
+      {}
       <div 
-        className="card-base p-7 flex flex-col justify-between cursor-pointer transform transition-[transform,background-color,box-shadow] duration-300 ease-out group-hover:-translate-y-1 group-hover:bg-secondary/5 group-hover:shadow-card-hover"
+        className="card-base p-7 flex flex-col justify-between transform transition-[transform,background-color,box-shadow] duration-300 ease-out group-hover:-translate-y-1 group-hover:bg-secondary/5 group-hover:shadow-card-hover"
       >
         <div>
           {/* Card Header: Avatar & Vetted Badge */}
           <div className="flex justify-between items-start gap-4 mb-6">
-            {/* REMOVED scale-110 to eliminate text/gradient rasterization lag */}
             <div 
               className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${avatarBg || 'from-primary to-secondary'} flex items-center justify-center text-background font-semibold text-xl shadow-inner transition-shadow duration-300 ease-out group-hover:shadow-glow`}
             >
@@ -88,8 +87,9 @@ export default function ProfessionalCard({ professional, onViewProfile }) {
             onClick={(e) => {
               e.stopPropagation();
               onViewProfile(id);
-          }}
-            className="w-full bg-background hover:bg-primary text-primary hover:text-background font-semibold py-3 px-4 rounded-xl border border-primary/30 hover:border-primary transition-[colors,box-shadow] duration-200 text-sm flex items-center justify-center gap-2 focus-visible:ring-2 focus-visible:ring-primary shadow-soft hover:shadow-glow group/btn"
+            }}
+           
+            className="w-full bg-background hover:bg-primary text-primary hover:text-background font-semibold py-3 px-4 rounded-xl border border-primary/30 hover:border-primary cursor-pointer transition-[colors,box-shadow] duration-200 text-sm flex items-center justify-center gap-2 focus-visible:ring-2 focus-visible:ring-primary shadow-soft hover:shadow-glow group/btn"
           >
             <span>View Profile</span>
             <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover/btn:translate-x-1.5" />
